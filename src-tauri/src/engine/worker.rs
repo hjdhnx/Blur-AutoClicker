@@ -347,10 +347,10 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
     let mut next_batch_time = Instant::now();
     let mut stop_reason = String::from("Stopped");
 
-    println!("Clicking at: {}, {}", target_x, target_y);
-
+    let (current_x, current_y) = get_cursor_pos();
+    let (diff_x, diff_y) = (target_x - current_x, target_y - current_y);
     if has_position {
-        move_mouse(target_x, target_y);
+        move_mouse(diff_x, diff_y);
     }
 
     if config.use_sequence() {
@@ -408,7 +408,9 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
                     );
                 }
             } else {
-                move_mouse(target_x, target_y);
+                let (current_x, current_y) = get_cursor_pos();
+                let (diff_x, diff_y) = (target_x - current_x, target_y - current_y);
+                move_mouse(diff_x, diff_y);
             }
         }
 
@@ -419,15 +421,6 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
         } else {
             per_tick_clicks
         };
-        let batch_duration = if config.variation > 0.0 {
-            let std_dev = cycle_duration_base * (config.variation / 100.0);
-            rng.next_gaussian(cycle_duration_base, std_dev)
-        } else {
-            cycle_duration_base
-        };
-        let hold_ms = (config.interval_secs * (config.duty.max(0.0) / 100.0) * 1000.0) as u32;
-
-        next_batch_time += Duration::from_secs_f64(batch_duration.max(0.001));
 
         let remaining_clicks = if config.limit > 0 {
             (config.limit as i64 - click_count).max(0) as usize
@@ -441,6 +434,17 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
             stop_reason = format!("Click limit reached ({})", config.limit);
             break;
         }
+
+        let variation_ratio = config.variation / 100.0;
+        let hold_factor = config.duty.max(0.0) / 100.0 * 1000.0;
+        let actual_duration_base = config.interval_secs * clicks_this_cycle as f64;
+        let batch_duration = if config.variation > 0.0 {
+            rng.next_gaussian(actual_duration_base, actual_duration_base * variation_ratio)
+        } else {
+            actual_duration_base
+        };
+        let hold_ms = (config.interval_secs * hold_factor) as u32;
+        next_batch_time += Duration::from_secs_f64(batch_duration.max(0.001));
 
         send_clicks(
             down_flag,

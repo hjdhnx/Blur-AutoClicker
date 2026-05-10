@@ -1,3 +1,9 @@
+# vUnreleased
+## Changed
+- Made batching more dynamic
+## Fix
+- Fixed Sequence clicking not working as intended.
+
 # v3.5.0 - 29.04.2026 (d.m.y)
 ## New
 - Added named presets for saving and reusing clicker configurations

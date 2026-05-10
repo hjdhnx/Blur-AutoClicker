@@ -42,3 +42,4 @@ winreg = "0.52"
 strip = true
 lto = "thin"
 codegen-units = 1
+debug = false
