@@ -1,3 +1,7 @@
+# v3.7.0 - 17.05.2026 (d.m.y)
+## Fix
+- Removed dynamic adjustment of the panel size of the hotkey field in simple mode to prevent a scroll bar from showing up.
+
 # v3.6.1 - 12.05.2026 (d.m.y)
 ## Fix
 - fixed sequence clicking not going through items correctly & movement with pointer percision issues should now be fixed as well. Within that fix i added always on movement & click randomization
