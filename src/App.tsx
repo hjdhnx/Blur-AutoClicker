@@ -14,6 +14,7 @@ import {
   buildPresetSnapshot,
   createPresetDefinition,
   MAX_PRESETS,
+  sanitizeSettings,
   sanitizePresetName,
   type PresetId,
 } from "./settingsSchema";
@@ -258,11 +259,14 @@ export default function App() {
     }
 
     if (Object.keys(restPatch).length > 0) {
-      const nextUiSettings = { ...uiSettingsRef.current, ...restPatch };
-      const nextCommittedSettings = {
-        ...committedSettingsRef.current,
-        ...restPatch,
-      };
+      const nextUiSettings = sanitizeSettings(
+        { ...uiSettingsRef.current, ...restPatch },
+        APP_VERSION,
+      );
+      const nextCommittedSettings = sanitizeSettings(
+        { ...committedSettingsRef.current, ...restPatch },
+        APP_VERSION,
+      );
       persistCommittedSettings(nextCommittedSettings, nextUiSettings);
     }
 

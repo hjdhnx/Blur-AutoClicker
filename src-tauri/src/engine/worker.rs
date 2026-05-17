@@ -378,10 +378,19 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
     } else {
         0.0
     };
-    let batch_size = if !config.double_click_enabled && cps >= 50.0 {
+    let batch_size = if !config.double_click_enabled && cps > 500.0 {
+        3usize
+    } else if !config.double_click_enabled && cps >= 50.0 {
         2usize
     } else {
         1usize
+    };
+    let effective_duty = if cps > 500.0 {
+        config.duty.min(1.0)
+    } else if cps >= 50.0 {
+        config.duty.min(99.0)
+    } else {
+        config.duty
     };
 
     let has_position = config.use_sequence();
@@ -489,14 +498,15 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
         }
 
         let variation_ratio = config.variation / 100.0;
-        let hold_factor = config.duty.max(0.0) / 100.0 * 1000.0;
+        let hold_factor = effective_duty.max(0.0) / 100.0 * 1000.0;
         let actual_duration_base = config.interval_secs * clicks_this_cycle as f64;
         let batch_duration = if config.variation > 0.0 {
             rng.next_gaussian(actual_duration_base, actual_duration_base * variation_ratio)
         } else {
             actual_duration_base
         };
-        let hold_ms = (config.interval_secs * hold_factor) as u32;
+        let hold_ms =
+            ((config.interval_secs * hold_factor) as u32).min((config.interval_secs * 1000.0) as u32);
         next_batch_time += Duration::from_secs_f64(batch_duration.max(0.001));
 
         if is_keyboard {

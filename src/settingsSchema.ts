@@ -22,6 +22,8 @@ export interface SequencePoint {
 export const DEFAULT_ACCENT_COLOR = "#22c55e";
 export const MAX_PRESETS = 20;
 export const PRESET_NAME_MAX_LENGTH = 40;
+export const DEFAULT_MAX_CLICK_SPEED = 500;
+export const EXTENDED_MAX_CLICK_SPEED = 1000;
 
 export const CLICK_INTERVAL_OPTIONS = [
   { value: "s", label: "Second" },
@@ -77,7 +79,7 @@ function createSequencePointId(): string {
 const PRESET_FIELDS = {
   clickSpeed: {
     default: 25,
-    limit: { min: 1, max: 500 },
+    limit: { min: 1, max: EXTENDED_MAX_CLICK_SPEED },
     ui: { section: "core", control: "number" },
   },
   clickInterval: {
@@ -293,6 +295,10 @@ const SETTINGS_ONLY_FIELDS = {
     default: false,
     ui: { section: "behavior", control: "toggle" },
   },
+  extendedClickSpeedLimit: {
+    default: false,
+    ui: { section: "behavior", control: "toggle" },
+  },
   minimizeToTray: {
     default: false,
     ui: { section: "startup", control: "toggle" },
@@ -407,6 +413,7 @@ export const SETTINGS_UI_SCHEMA = [
       "showStopOverlay",
       "showStopReason",
       "strictHotkeyModifiers",
+      "extendedClickSpeedLimit",
     ],
   },
   {
@@ -436,6 +443,14 @@ export function clampNumber(
     typeof value === "number" && Number.isFinite(value) ? value : fallback;
   const minClamped = min === undefined ? parsed : Math.max(min, parsed);
   return max === undefined ? minClamped : Math.min(max, minClamped);
+}
+
+export function getMaxClickSpeed(
+  extendedClickSpeedLimit: boolean | null | undefined,
+) {
+  return extendedClickSpeedLimit
+    ? EXTENDED_MAX_CLICK_SPEED
+    : DEFAULT_MAX_CLICK_SPEED;
 }
 
 export function sanitizeBoolean(value: unknown, fallback: boolean): boolean {
@@ -768,6 +783,12 @@ export function sanitizeSettings(
   settingsOnly.accentColor = sanitizeHexColor(
     saved.accentColor,
     defaults.accentColor,
+  );
+  presetSettings.clickSpeed = clampNumber(
+    saved.clickSpeed,
+    presetSettings.clickSpeed,
+    SETTINGS_LIMITS.clickSpeed.min,
+    getMaxClickSpeed(settingsOnly.extendedClickSpeedLimit),
   );
   settingsOnly.disableScreenshots = false;
   settingsOnly.presets = sanitizePresets(saved.presets, defaults);
