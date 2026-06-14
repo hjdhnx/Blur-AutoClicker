@@ -116,6 +116,21 @@
   padding-bottom: 0;
 }
 
+.changelog-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.changelog-arrow {
+  transition: transform 0.15s ease;
+}
+
+.changelog-arrow.open {
+  transform: rotate(90deg);
+}
+
 .settings-seg-group {
   display: flex;
   background: var(--bg-elevated);

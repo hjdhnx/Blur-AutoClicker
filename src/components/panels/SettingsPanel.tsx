@@ -16,6 +16,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import ConfirmDialog from "../ConfirmDialog";
 import { AdvDropdown } from "./advanced/shared";
+import { changelogEntries } from "../../changelog";
+import ChangelogContent from "../ChangelogContent";
 import {
   DEFAULT_MAX_CLICK_SPEED,
   DEFAULT_ACCENT_COLOR,
@@ -292,6 +294,7 @@ export default function SettingsPanel({
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<PresetId | null>(
     null,
   );
+  const [showChangelog, setShowChangelog] = useState(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const presetsListRef = useRef<HTMLDivElement>(null);
@@ -540,9 +543,33 @@ export default function SettingsPanel({
           </div>
 
           <div className="settings-row">
-            <span className="settings-label">{t("settings.version")}</span>
-            <span className="settings-value">v{appInfo.version}</span>
+            <div className="settings-label-group">
+              <span className="settings-label">{t("settings.version")}</span>
+              <span className="settings-value">v{appInfo.version}</span>
+            </div>
+            <button
+              className="settings-btn-secondary changelog-toggle-btn"
+              onClick={() => setShowChangelog((v) => !v)}
+            >
+              <svg
+                className={`changelog-arrow${showChangelog ? ' open' : ''}`}
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                fill="none"
+              >
+                <path
+                  d="M3 1L7 5L3 9"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {showChangelog ? t("settings.hideChanges") : t("settings.showChanges")}
+            </button>
           </div>
+          {showChangelog && <ChangelogContent entries={changelogEntries} />}
         </SettingsCard>
 
         <SettingsCard
