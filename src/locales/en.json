@@ -105,7 +105,12 @@
     "resetDialogConfirm": "Reset",
     "clearStatsDialogTitle": "Clear usage data?",
     "clearStatsDialogMessage": "Your total clicks, session count, time spent clicking, and CPU averages will be permanently erased.",
-    "clearStatsDialogConfirm": "Clear"
+    "clearStatsDialogConfirm": "Clear",
+    "checkForUpdate": "Check for Update",
+    "checkingForUpdate": "Checking...",
+    "updateAvailable": "Update found!",
+    "noUpdateAvailable": "No update found",
+    "updateCheckFailed": "Check failed"
   },
   "simple": {
     "changeClickInterval": "Change Click Interval",

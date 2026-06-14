@@ -1,5 +1,6 @@
 # v3.7.1 - 13.06.2026 (d.m.y)
 ## New
+- Added ```Check for update``` button in the settings.
 - Added changelog in the App settings page.
 ## Fixed
 - Removed text weight difference for light mode fixing issue [#139](https://github.com/Blur009/Blur-AutoClicker/issues/139)

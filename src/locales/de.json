@@ -105,7 +105,12 @@
     "resetDialogConfirm": "Zurücksetzen",
     "clearStatsDialogTitle": "Nutzungsdaten löschen?",
     "clearStatsDialogMessage": "Ihre Gesamtklicks, Sitzungsanzahl, Klickzeit und CPU-Durchschnitte werden dauerhaft gelöscht.",
-    "clearStatsDialogConfirm": "Löschen"
+    "clearStatsDialogConfirm": "Löschen",
+    "checkForUpdate": "Nach Update suchen",
+    "checkingForUpdate": "Suche...",
+    "updateAvailable": "Update verfügbar!",
+    "noUpdateAvailable": "Kein Update verfügbar",
+    "updateCheckFailed": "Suche fehlgeschlagen"
   },
   "simple": {
     "changeClickInterval": "Klick-Intervall ändern",

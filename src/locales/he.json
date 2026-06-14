@@ -105,7 +105,12 @@
     "resetDialogConfirm": "אפס",
     "clearStatsDialogTitle": "למחוק את נתוני השימוש?",
     "clearStatsDialogMessage": "סה\"כ הלחיצות, מספר ההפעלות, זמן הלחיצה וממוצעי השימוש במעבד יימחקו לצמיתות.",
-    "clearStatsDialogConfirm": "מחק"
+    "clearStatsDialogConfirm": "מחק",
+    "checkForUpdate": "בדוק עדכון",
+    "checkingForUpdate": "בודק...",
+    "updateAvailable": "עדכון זמין!",
+    "noUpdateAvailable": "לא נמצא עדכון",
+    "updateCheckFailed": "הבדיקה נכשלה"
   },
   "simple": {
     "changeClickInterval": "שנה מרווח לחיצות",

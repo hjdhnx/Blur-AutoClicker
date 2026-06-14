@@ -105,7 +105,12 @@
     "resetDialogConfirm": "Restablecer",
     "clearStatsDialogTitle": "¿Borrar datos de uso?",
     "clearStatsDialogMessage": "Tus clics totales, sesiones, tiempo de clic y promedios de CPU se borrarán permanentemente.",
-    "clearStatsDialogConfirm": "Borrar"
+    "clearStatsDialogConfirm": "Borrar",
+    "checkForUpdate": "Buscar actualización",
+    "checkingForUpdate": "Buscando...",
+    "updateAvailable": "¡Actualización disponible!",
+    "noUpdateAvailable": "Sin actualización",
+    "updateCheckFailed": "Búsqueda fallida"
   },
   "simple": {
     "changeClickInterval": "Cambiar intervalo de clic",
