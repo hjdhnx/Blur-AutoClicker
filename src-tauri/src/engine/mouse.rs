@@ -3,6 +3,7 @@ use super::worker::{sleep_interruptible, RunControl};
 use std::time::Duration;
 use std::time::Instant;
 
+use super::AUTOCLICKER_EXTRA_INFO;
 use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
     SendInput, INPUT, INPUT_MOUSE, MOUSEEVENTF_ABSOLUTE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP,
     MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_MOVE, MOUSEEVENTF_RIGHTDOWN,
@@ -191,7 +192,7 @@ pub fn make_input(flags: u32, time: u32) -> INPUT {
                 mouseData: 0,
                 dwFlags: flags,
                 time,
-                dwExtraInfo: 0,
+                dwExtraInfo: AUTOCLICKER_EXTRA_INFO,
             },
         },
     }
