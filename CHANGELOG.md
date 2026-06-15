@@ -1,3 +1,8 @@
+# v3.7.2 - 15.06.2026 (d.m.y)
+## Fixed
+- clicker not clicking.
+- clicker not reaching accurate cps at higher speeds.
+
 # v3.7.1 - 15.06.2026 (d.m.y)
 ## New
 - Scrolling on drop-down fields now supported.

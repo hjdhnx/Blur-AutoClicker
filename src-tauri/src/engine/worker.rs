@@ -430,8 +430,12 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
     };
     let effective_duty = if cps > 500.0 {
         config.duty.min(1.0)
+    } else if cps >= 200.0 {
+        config.duty.min(30.0)
+    } else if cps >= 100.0 {
+        config.duty.min(70.0)
     } else if cps >= 50.0 {
-        config.duty.min(99.0)
+        config.duty.min(98.0)
     } else {
         config.duty
     };

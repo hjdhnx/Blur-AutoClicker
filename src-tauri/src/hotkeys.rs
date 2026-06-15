@@ -218,7 +218,7 @@ unsafe extern "system" fn keyboard_ll_proc(n_code: i32, w_param: usize, l_param:
         let khs = &*(l_param as *const KBDLLHOOKSTRUCT);
         if (khs.dwExtraInfo) != AUTOCLICKER_EXTRA_INFO {
             let vk = khs.vkCode as i32;
-            if !(0..256).contains(&vk) {
+            if (0..256).contains(&vk) {
                 let down = matches!(w_param as u32, WM_KEYDOWN | WM_SYSKEYDOWN);
                 physical_key_state()[vk as usize].store(down, Ordering::Relaxed);
             }
@@ -338,9 +338,12 @@ pub fn start_hotkey_listener(app: AppHandle) {
 }
 
 fn is_hotkey_binding_pressed_physical(binding: &HotkeyBinding, strict: bool) -> bool {
-    let ctrl_down = is_physical_vk_down(VK_CONTROL as i32);
-    let alt_down = is_physical_vk_down(VK_MENU as i32);
-    let shift_down = is_physical_vk_down(VK_SHIFT as i32);
+    let ctrl_down = is_physical_vk_down(VK_LCONTROL as i32)
+        || is_physical_vk_down(VK_RCONTROL as i32);
+    let alt_down =
+        is_physical_vk_down(VK_LMENU as i32) || is_physical_vk_down(VK_RMENU as i32);
+    let shift_down = is_physical_vk_down(VK_LSHIFT as i32)
+        || is_physical_vk_down(VK_RSHIFT as i32);
     let super_down = is_physical_vk_down(VK_LWIN as i32) || is_physical_vk_down(VK_RWIN as i32);
     if !modifiers_match(binding, ctrl_down, alt_down, shift_down, super_down, strict) {
         return false;
