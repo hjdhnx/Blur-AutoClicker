@@ -216,6 +216,15 @@ pub fn set_autostart_enabled(enabled: bool) -> Result<(), String> {
 }
 
 #[tauri::command]
+pub fn hide_main_window(app: AppHandle) -> Result<(), String> {
+    crate::window_lifecycle::on_hide(&app);
+    if let Some(window) = app.get_webview_window("main") {
+        window.hide().map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
 pub fn quit_app(app: AppHandle) {
     crate::overlay::OVERLAY_THREAD_RUNNING.store(false, std::sync::atomic::Ordering::SeqCst);
     app.exit(0);
@@ -225,5 +234,3 @@ pub fn quit_app(app: AppHandle) {
 pub fn list_processes() -> Result<Vec<crate::engine::process::ProcessInfo>, String> {
     Ok(crate::engine::process::list_running_processes())
 }
-
-

@@ -371,8 +371,7 @@ function AnimatedTitle({
     });
 
     return clearScheduledWork;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-  }, [running, stopKey, t, warning, paused]);
+  }, [running, stopKey, t, warning, paused, stopReason]);
 
   return (
     <span

@@ -16,7 +16,7 @@ interface Props {
   activeSequenceTick: number;
 }
 
-export default function AdvancedPanel({
+function AdvancedPanel({
   settings,
   update,
   showInfo,
@@ -55,3 +55,5 @@ export default function AdvancedPanel({
     </div>
   );
 }
+
+export default AdvancedPanel;

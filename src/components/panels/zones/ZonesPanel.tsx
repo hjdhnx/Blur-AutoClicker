@@ -13,7 +13,7 @@ interface Props {
   showInfo: boolean;
 }
 
-export default function ZonesPanel({ settings, update, showInfo }: Props) {
+function ZonesPanel({ settings, update, showInfo }: Props) {
   return (
     <div className="adv-panel adv-panel-text adv-panel--zones">
       <div className="adv-zones-row">
@@ -42,3 +42,5 @@ export default function ZonesPanel({ settings, update, showInfo }: Props) {
     </div>
   );
 }
+
+export default ZonesPanel;

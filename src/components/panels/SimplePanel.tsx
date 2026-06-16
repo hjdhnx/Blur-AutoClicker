@@ -1,4 +1,4 @@
-import type { CSSProperties, ChangeEvent, ReactNode, WheelEvent } from "react";
+import { type CSSProperties, type ChangeEvent, type ReactNode, type WheelEvent } from "react";
 import type { MouseButton, Settings } from "../../store";
 import { useTranslation, type TranslationKey } from "../../i18n";
 import CadenceInput from "../CadenceInput";
@@ -125,7 +125,7 @@ function NumberField({
   );
 }
 
-export default function SimplePanel({ settings, update }: SimplePanelProps) {
+function SimplePanel({ settings, update }: SimplePanelProps) {
   const { t } = useTranslation();
 
   const clickModeOptions = MODE_OPTIONS.map((mode) => ({
@@ -281,3 +281,5 @@ export default function SimplePanel({ settings, update }: SimplePanelProps) {
     </div>
   );
 }
+
+export default SimplePanel;

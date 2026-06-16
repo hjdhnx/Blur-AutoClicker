@@ -306,7 +306,7 @@ export default function App() {
 
   const handleWindowClose = async () => {
     if (uiSettingsRef.current.minimizeToTray) {
-      await getCurrentWindow().hide();
+      await invoke("hide_main_window");
     } else {
       await invoke("quit_app");
     }

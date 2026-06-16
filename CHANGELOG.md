@@ -11,6 +11,7 @@
 - Failsafe (corner + edge) and custom stop zone sections have moved slightly.
 - Zero-click runs are no longer recorded to stats or printed to console in dev mode.
 - Flipped around On/Off toggle to Off/On in the settings.
+- Slightly reduced ram usage.
 
 
 # v3.7.2 - 15.06.2026 (d.m.y)

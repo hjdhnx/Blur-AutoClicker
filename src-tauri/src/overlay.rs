@@ -313,12 +313,7 @@ pub fn check_auto_hide(app: &AppHandle) {
             *last = None;
             if let Some(window) = app.get_webview_window("overlay") {
                 log::info!("[Overlay] Auto-hide: hiding window");
-                #[cfg(target_os = "windows")]
-                {
-                    if let Ok(hwnd) = get_hwnd(&window) {
-                        unsafe { ShowWindow(hwnd, 0) };
-                    }
-                }
+                hide_overlay_window(&window);
             }
         }
     }
@@ -344,6 +339,7 @@ fn hide_overlay_window(window: &tauri::WebviewWindow) {
     }
     #[cfg(not(target_os = "windows"))]
     let _ = window.hide();
+    let _ = window.eval("document.body.innerHTML = '';");
 }
 
 #[cfg(target_os = "windows")]
