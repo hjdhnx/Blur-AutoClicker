@@ -1,5 +1,3 @@
-import { DEFAULT_LANGUAGE, isLanguage, type Language } from "./i18n";
-
 export type ClickInterval = "s" | "m" | "h" | "d";
 export type MouseButton = "Left" | "Middle" | "Right";
 export type InputType = "mouse" | "keyboard";
@@ -234,10 +232,6 @@ const SETTINGS_ONLY_FIELDS = {
     default: "ctrl+y",
     ui: { section: "core", control: "hotkey" },
   },
-  language: {
-    default: DEFAULT_LANGUAGE as Language,
-    ui: { section: "appearance", control: "select" },
-  },
   rateInputMode: {
     default: "rate" as RateInputMode,
     ui: { section: "core", control: "select" },
@@ -461,7 +455,7 @@ export const SETTINGS_UI_SCHEMA = [
   },
   {
     id: "appearance",
-    fields: ["language", "theme", "advancedSequenceLayout", "accentColor"],
+    fields: ["theme", "advancedSequenceLayout", "accentColor"],
   },
   {
     id: "presets",
@@ -829,9 +823,6 @@ export function sanitizeSettings(
     SETTINGS_LIMITS.speedVariation.max,
   );
 
-  settingsOnly.language = isLanguage(saved.language)
-    ? saved.language
-    : defaults.language;
   settingsOnly.rateInputMode = sanitizeRateInputMode(
     saved.rateInputMode,
     defaults.rateInputMode,

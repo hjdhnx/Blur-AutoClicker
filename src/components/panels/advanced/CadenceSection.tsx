@@ -1,5 +1,5 @@
 import type { MouseButton, Settings } from "../../../store";
-import { useTranslation, type TranslationKey } from "../../../i18n";
+
 import { MOUSE_BUTTON_OPTIONS } from "../../../settingsSchema";
 import { isAlphabeticKeyboardKey } from "../../../keyboardKeyCase";
 import CadenceInput from "../../CadenceInput";
@@ -72,17 +72,16 @@ interface Props {
 }
 
 export default function CadenceSection({ settings, update, showInfo }: Props) {
-  const { t } = useTranslation();
   const rowSpacing = 8;
   const inputTypeOptions = [
     {
       value: "mouse",
-      label: t("advanced.mouseButton"),
+      label: "Mouse Button",
       icon: <MouseTargetIcon />,
     },
     {
       value: "keyboard",
-      label: t("advanced.keyboardKey"),
+      label: "Keyboard Key",
       icon: <KeyboardTargetIcon />,
     },
   ] as const;
@@ -109,9 +108,9 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
           }}
         >
           {showInfo ? (
-            <InfoIcon text={t("advanced.cadenceDescription")} />
+            <InfoIcon text="Controls how quickly clicks are generated: either as clicks per interval (Rate) or as a fixed delay between clicks (Delay)." />
           ) : null}
-          <span className="adv-card-title">{t("advanced.cadence")}</span>
+          <span className="adv-card-title">Cadence</span>
         </div>
       </div>
       <CardDivider />
@@ -130,9 +129,9 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
           }}
         >
           {showInfo ? (
-            <InfoIcon text={t("advanced.hotkeyDescription")} />
+            <InfoIcon text="Choose the key combo that starts and stops the clicker. Use Toggle for press-on/press-off, or Hold to click only while held." />
           ) : null}
-          <span className="adv-label">{t("advanced.hotkey")}</span>
+          <span className="adv-label">Hotkey</span>
         </div>
         <div className="adv-row" style={{ marginLeft: "auto", gap: 8 }}>
           <div className="adv-textbox">
@@ -155,7 +154,7 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
                 className={`adv-seg-btn ${settings.mode === clickModeOption ? "active" : ""}`}
                 onClick={() => update({ mode: clickModeOption })}
               >
-                {t(`options.mode.${clickModeOption}` as TranslationKey)}
+                {clickModeOption}
               </button>
             ))}
           </div>
@@ -173,15 +172,15 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
             <InfoIcon
               text={
                 settings.inputType === "mouse"
-                  ? t("advanced.mouseButtonDescription")
-                  : t("advanced.keyboardKeyDescription")
+                  ? "Select which mouse button the clicker will press on each click event."
+                  : "Select which keyboard key the clicker will press on each click event."
               }
             />
           ) : null}
           <span className="adv-label">
             {settings.inputType === "mouse"
-              ? t("advanced.mouseButton")
-              : t("advanced.keyboardKey")}
+              ? "Mouse Button"
+              : "Keyboard Key"}
           </span>
         </div>
         <div className="adv-target-controls">
@@ -216,9 +215,7 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
                     update({ mouseButton: mouseButtonOption as MouseButton })
                   }
                 >
-                  {t(
-                    `options.mouseButton.${mouseButtonOption}` as TranslationKey,
-                  )}
+                  {mouseButtonOption}
                 </button>
               ))}
             </div>

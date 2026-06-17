@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { Settings } from "../../../store";
 import type { ProcessListBehavior, ProcessListEntry } from "../../../settingsSchema";
-import { useTranslation } from "../../../i18n";
+
 import {
   Disableable,
   ToggleBtn,
@@ -28,7 +28,6 @@ export default function ProcessListSection({
   update,
   showInfo,
 }: Props) {
-  const { t } = useTranslation();
   const [processes, setProcesses] = useState<ProcessInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -110,9 +109,9 @@ export default function ProcessListSection({
           }}
         >
           {showInfo ? (
-            <InfoIcon text={t("advanced.processListDescription")} />
+            <InfoIcon text="Pause clicking when certain applications are focused. Checked processes are whitelisted or blacklisted depending on the mode selected." />
           ) : null}
-          <span className="adv-card-title">{t("advanced.processList")}</span>
+          <span className="adv-card-title">Process List</span>
         </div>
         <ToggleBtn
           value={settings.processListEnabled}
@@ -122,7 +121,7 @@ export default function ProcessListSection({
       <CardDivider />
       <Disableable
         enabled={settings.processListEnabled}
-        disabledReason={t("advanced.processListUnavailable")}
+        disabledReason="Enable Process List to manage application rules."
       >
         <div className="adv-row" style={{ marginBottom: "0.5rem" }}>
           <div className="adv-seg-group">
@@ -131,41 +130,41 @@ export default function ProcessListSection({
               className={`adv-seg-btn ${settings.processListMode === "whitelist" ? "active" : ""}`}
               onClick={() => update({ processListMode: "whitelist" })}
             >
-              {t("advanced.whitelist")}
+              Whitelist
             </button>
             <button
               type="button"
               className={`adv-seg-btn ${settings.processListMode === "blacklist" ? "active" : ""}`}
               onClick={() => update({ processListMode: "blacklist" })}
             >
-              {t("advanced.blacklist")}
+              Blacklist
             </button>
           </div>
           <input
             type="text"
             className="adv-proc-search"
-            placeholder={`${t("advanced.searchIn")} ${processes.length} ${t("advanced.applications")}`}
+            placeholder={`search in ${processes.length} applications`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         {settings.processListMode === "whitelist" && settings.processListEntries.length === 0 ? (
           <div className="adv-whitelist-warning">
-            {t("advanced.whitelistEmptyWarning")}
+            Whitelist mode is active with no applications selected. Clicking will be blocked everywhere.
           </div>
         ) : null}
         <div className="adv-process-list">
           {loading ? (
             <div className="adv-sequence-empty">
-              {t("advanced.refreshing")}
+              Refreshing...
             </div>
           ) : processes.length === 0 ? (
             <div className="adv-sequence-empty">
-              {t("advanced.processListEmpty")}
+              No processes found. Click Refresh.
             </div>
           ) : searchQuery.length >= 1 && checkedProcesses.length === 0 && uncheckedProcesses.length === 0 ? (
             <div className="adv-sequence-empty" style={{ textAlign: "center", padding: "1rem" }}>
-              {t("advanced.noProcessNamed", { query: searchQuery })}
+              no process named "{searchQuery}"
             </div>
           ) : (
             <>
@@ -209,7 +208,6 @@ function ProcessRow({
   onToggleEntry: (name: string, checked: boolean) => void;
   onToggleBehavior: (name: string, behavior: ProcessListBehavior) => void;
 }) {
-  const { t } = useTranslation();
   const isChecked = entry?.enabled ?? false;
   return (
     <label className="adv-sequence-item">
@@ -231,7 +229,7 @@ function ProcessRow({
           disabled={!isChecked}
           onClick={() => isChecked && onToggleBehavior(proc.name, "stop")}
         >
-          {t("advanced.behaviorStop")}
+          Stop
         </button>
         <button
           type="button"
@@ -239,7 +237,7 @@ function ProcessRow({
           disabled={!isChecked}
           onClick={() => isChecked && onToggleBehavior(proc.name, "pause")}
         >
-          {t("advanced.behaviorPause")}
+          Pause
         </button>
       </div>
     </label>

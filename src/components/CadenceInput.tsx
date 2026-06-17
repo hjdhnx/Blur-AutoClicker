@@ -4,7 +4,7 @@ import { RATE_INPUT_MODE_OPTIONS } from "../cadence";
 import { convertDurationToRate, convertRateToDuration } from "../cadence";
 import { normalizeIntegerRaw } from "../numberInput";
 import type { RateInputMode, Settings } from "../store";
-import { useTranslation } from "../i18n";
+
 import { AdvDropdown } from "./panels/advanced/shared";
 import { getMaxClickSpeed, type ClickInterval } from "../settingsSchema";
 
@@ -120,7 +120,6 @@ function DurationField({
 }
 
 export default function CadenceInput({ settings, update, variant }: Props) {
-  const { t } = useTranslation();
   const maxClickSpeed = getMaxClickSpeed(settings.extendedClickSpeedLimit);
 
   const switchMode = (mode: RateInputMode) => {
@@ -177,7 +176,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
               value={settings.clickSpeed}
               min={1}
               max={maxClickSpeed}
-              aria-label={t("advanced.clicksPer")}
+              aria-label="Clicks Per"
               onChange={(event) =>
                 handleNumberChange(event, (next) =>
                   updateSimpleCadence({ clickSpeed: next }),
@@ -200,7 +199,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
             />
             <div className="vertical-devider vertical-devider--stretch" />
             <span className="simple-control-label">
-              {t("advanced.clicksPer")}
+              Clicks Per
             </span>
             <div className="vertical-devider vertical-devider--stretch" />
             <AdvDropdown
@@ -345,7 +344,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                 />
               </div>
               <div className="adv-vdivider" />
-              <span className="adv-unf">{t("advanced.clicksPer")}</span>
+              <span className="adv-unf">Clicks Per</span>
               <div className="adv-vdivider" />
               <div className="adv-foc adv-foc-grow">
                 <AdvDropdown

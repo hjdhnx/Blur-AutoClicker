@@ -1,6 +1,6 @@
 import { type CSSProperties, type ChangeEvent, type ReactNode, type WheelEvent } from "react";
 import type { MouseButton, Settings } from "../../store";
-import { useTranslation, type TranslationKey } from "../../i18n";
+
 import CadenceInput from "../CadenceInput";
 import HotkeyCaptureInput from "../HotkeyCaptureInput";
 import {
@@ -126,16 +126,14 @@ function NumberField({
 }
 
 function SimplePanel({ settings, update }: SimplePanelProps) {
-  const { t } = useTranslation();
-
   const clickModeOptions = MODE_OPTIONS.map((mode) => ({
     value: mode,
-    label: t(`options.mode.${mode}` as TranslationKey),
+    label: mode === "Toggle" ? "Toggle" : "Hold",
   }));
 
   const mouseButtonOptions = MOUSE_BUTTON_OPTIONS.map((button) => ({
     value: button,
-    label: t(`options.mouseButton.${button}` as TranslationKey),
+    label: button,
   }));
 
   const inputTypeOptions = [
@@ -258,7 +256,7 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
 
         <ControlBox className="simple-row-item">
           <NumberField
-            label={t("simple.hold")}
+            label="Click Duration"
             value={settings.dutyCycle}
             min={SETTINGS_LIMITS.dutyCycle.min!}
             max={SETTINGS_LIMITS.dutyCycle.max!}
@@ -269,7 +267,7 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
 
         <ControlBox className="simple-row-item">
           <NumberField
-            label={t("simple.randomization")}
+            label="Speed Variation"
             value={settings.speedVariation}
             min={SETTINGS_LIMITS.speedVariation.min!}
             max={SETTINGS_LIMITS.speedVariation.max!}

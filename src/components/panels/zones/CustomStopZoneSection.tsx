@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Settings } from '../../../store';
-import { useTranslation } from '../../../i18n';
+
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import {
@@ -29,7 +29,6 @@ export default function CustomStopZoneSection({
   update,
   showInfo,
 }: Props) {
-  const { t } = useTranslation();
   const [drawingZone, setDrawingZone] = useState(false);
   const updateRef = useRef(update);
 
@@ -129,9 +128,9 @@ export default function CustomStopZoneSection({
           }}
         >
           {showInfo ? (
-            <InfoIcon text={t('advanced.customStopZoneDescription')} />
+            <InfoIcon text="Draw a zone on screen that stops clicking when your cursor enters it." />
           ) : null}
-          <span className="adv-card-title">{t('advanced.customStopZone')}</span>
+          <span className="adv-card-title">Custom Stop Zone</span>
         </div>
         <ToggleBtn
           value={settings.customStopZoneEnabled}
@@ -226,8 +225,8 @@ export default function CustomStopZoneSection({
                 }}
               >
                 {drawingZone
-                  ? t('advanced.customStopZoneCancelDrawing')
-                  : t('advanced.customStopZoneDraw')}
+                  ? 'Cancel'
+                  : 'Draw Zone'}
               </button>
             </div>
           </div>

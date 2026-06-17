@@ -7,7 +7,61 @@ import {
   getKeyboardLayoutMap,
   type HotkeyDisplayLabels,
 } from "../hotkeys";
-import { useTranslation, type TranslationKey } from "../i18n";
+
+const hotkeyLabels: HotkeyDisplayLabels = {
+  empty: "Click and press keys",
+  modifiers: {
+    ctrl: "Ctrl",
+    alt: "Alt",
+    shift: "Shift",
+    super: "Super",
+  },
+  keys: {
+    up: "Up",
+    down: "Down",
+    left: "Left",
+    right: "Right",
+    pageup: "Page Up",
+    pagedown: "Page Down",
+    backspace: "Backspace",
+    delete: "Delete",
+    insert: "Insert",
+    home: "Home",
+    end: "End",
+    enter: "Enter",
+    tab: "Tab",
+    space: "Space",
+    escape: "Esc",
+    esc: "Esc",
+    capslock: "Caps Lock",
+    numlock: "Num Lock",
+    scrolllock: "Scroll Lock",
+    printscreen: "Print Screen",
+    pause: "Pause",
+    menu: "Menu",
+    mouseleft: "Mouse Left",
+    mouseright: "Mouse Right",
+    mousemiddle: "Scroll Button",
+    mouse4: "Mouse Back",
+    mouse5: "Mouse Forward",
+    numpad0: "Num 0",
+    numpad1: "Num 1",
+    numpad2: "Num 2",
+    numpad3: "Num 3",
+    numpad4: "Num 4",
+    numpad5: "Num 5",
+    numpad6: "Num 6",
+    numpad7: "Num 7",
+    numpad8: "Num 8",
+    numpad9: "Num 9",
+    numpadadd: "Num +",
+    numpadsubtract: "Num -",
+    numpadmultiply: "Num *",
+    numpaddivide: "Num /",
+    numpaddecimal: "Num .",
+  },
+};
+
 
 interface Props {
   value: string;
@@ -29,7 +83,6 @@ export default function HotkeyCaptureInput({
   const suppressResetTimerRef = useRef<number | null>(null);
   const [layoutMap, setLayoutMap] =
     useState<Awaited<ReturnType<typeof getKeyboardLayoutMap>>>(null);
-  const { t } = useTranslation();
 
   useEffect(() => {
     let active = true;
@@ -171,72 +224,12 @@ export default function HotkeyCaptureInput({
     };
   }, [listening, onChange]);
 
-  const hotkeyLabels = useMemo<HotkeyDisplayLabels>(() => {
-    const keyCodes = [
-      "up",
-      "down",
-      "left",
-      "right",
-      "pageup",
-      "pagedown",
-      "backspace",
-      "delete",
-      "insert",
-      "home",
-      "end",
-      "enter",
-      "tab",
-      "space",
-      "escape",
-      "esc",
-      "capslock",
-      "numlock",
-      "scrolllock",
-      "printscreen",
-      "pause",
-      "menu",
-      "mouseleft",
-      "mouseright",
-      "mousemiddle",
-      "mouse4",
-      "mouse5",
-      "numpad0",
-      "numpad1",
-      "numpad2",
-      "numpad3",
-      "numpad4",
-      "numpad5",
-      "numpad6",
-      "numpad7",
-      "numpad8",
-      "numpad9",
-      "numpadadd",
-      "numpadsubtract",
-      "numpadmultiply",
-      "numpaddivide",
-      "numpaddecimal",
-    ] as const;
-
-    return {
-      empty: t("hotkey.empty"),
-      modifiers: {
-        ctrl: t("hotkey.modifier.ctrl"),
-        alt: t("hotkey.modifier.alt"),
-        shift: t("hotkey.modifier.shift"),
-        super: t("hotkey.modifier.super"),
-      },
-      keys: Object.fromEntries(
-        keyCodes.map((code) => [code, t(`hotkey.key.${code}` as TranslationKey)]),
-      ),
-    };
-  }, [t]);
-
   const displayText = useMemo(
     () =>
       listening
-        ? t("hotkey.pressKeys")
+        ? "Press keys..."
         : formatHotkeyForDisplay(value, layoutMap, hotkeyLabels),
-    [hotkeyLabels, layoutMap, listening, t, value],
+    [layoutMap, listening, value],
   );
 
   return (

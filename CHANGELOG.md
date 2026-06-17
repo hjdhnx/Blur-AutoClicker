@@ -12,6 +12,7 @@
 - Zero-click runs are no longer recorded to stats or printed to console in dev mode.
 - Flipped around On/Off toggle to Off/On in the settings.
 - Slightly reduced ram usage.
+- Removed Translations due to the complexity of maintaining them (~80% user vote on removing them).
 ## Fixed
 - Click speed not being reached at high CPS (this time for real)
 
