@@ -15,7 +15,7 @@ pub static OVERLAY_THREAD_RUNNING: std::sync::atomic::AtomicBool =
 
 #[cfg(target_os = "windows")]
 use windows_sys::Win32::UI::WindowsAndMessaging::{
-    GetWindowLongW, SetWindowLongW, SetWindowPos, ShowWindow, GWL_EXSTYLE, GWL_STYLE,
+    GetWindowLongW, SetWindowLongW, SetWindowPos, ShowWindow, GWL_EXSTYLE, GWL_STYLE, HWND_TOPMOST,
     SWP_FRAMECHANGED, SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER, SWP_SHOWWINDOW,
 };
 
@@ -339,7 +339,6 @@ fn hide_overlay_window(window: &tauri::WebviewWindow) {
     }
     #[cfg(not(target_os = "windows"))]
     let _ = window.hide();
-    let _ = window.eval("document.body.innerHTML = '';");
 }
 
 #[cfg(target_os = "windows")]
@@ -411,17 +410,22 @@ fn sync_overlay_bounds(window: &tauri::WebviewWindow) -> Result<VirtualScreenRec
 
 #[cfg(target_os = "windows")]
 fn show_overlay_window(window: &tauri::WebviewWindow) -> Result<(), String> {
+    let _ = window.eval(
+        "document.getElementById('zone-layer').innerHTML = ''; \
+         document.getElementById('sequence-layer').innerHTML = '';",
+    );
+
     let hwnd = get_hwnd(window)?;
 
     unsafe {
         SetWindowPos(
             hwnd,
-            std::ptr::null_mut(),
+            HWND_TOPMOST,
             0,
             0,
             0,
             0,
-            SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW,
+            SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW,
         );
     }
 
