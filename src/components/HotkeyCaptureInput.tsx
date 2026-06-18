@@ -244,7 +244,12 @@ export default function HotkeyCaptureInput({
           ignorePrimaryInputMouseUntilRef.current = performance.now() + 150;
         }
       }}
-      onFocus={() => setListening(true)}
+      onFocus={() => {
+        setListening(true);
+        invoke("stop_clicker").catch((err) => {
+          console.error("Failed to stop clicker:", err);
+        });
+      }}
       onBlur={() => setListening(false)}
       onContextMenu={(event) => {
         if (listening) {

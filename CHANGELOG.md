@@ -5,6 +5,7 @@
 - Automatic stopping on Alt+Tab / Win+Tab (On/Off toggle in Settings → Behavior).
 - Search bar for filtering applications in the process list.
 - Empty whitelist warning shown in the UI and title bar when clicker starts.
+- Autoclicker automatically stops when clicking into the hotkey field.
 ## Changed
 - Stop reason now visible in simple mode (not just advanced/zones).
 - Pre-click abort checks now run before every individual click (failsafe, time limit, process list, task switcher).

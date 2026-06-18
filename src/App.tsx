@@ -581,8 +581,10 @@ export default function App() {
       if (resizeTimeout.current) {
         clearTimeout(resizeTimeout.current);
       }
-      if (toggleTimerRef.current) {
-        clearTimeout(toggleTimerRef.current);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const toggleTimer = toggleTimerRef.current;
+      if (toggleTimer) {
+        clearTimeout(toggleTimer);
       }
     };
   }, []);
@@ -852,14 +854,10 @@ export default function App() {
 
   const [stopKey, setStopKey] = useState(0);
   const prevStopReasonRef = useRef(status.stopReason);
-
-  useEffect(() => {
-    if (status.stopReason && status.stopReason !== prevStopReasonRef.current) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setStopKey((k) => k + 1);
-    }
+  if (status.stopReason && status.stopReason !== prevStopReasonRef.current) {
     prevStopReasonRef.current = status.stopReason;
-  }, [status.stopReason]);
+    setStopKey((k) => k + 1);
+  }
 
   return (
     <div className="app-root" data-tab={tab}>
