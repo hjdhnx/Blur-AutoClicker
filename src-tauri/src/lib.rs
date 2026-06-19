@@ -113,6 +113,8 @@ pub fn run() {
                 }
             });
 
+            window_lifecycle::start_periodic_trimming(30);
+
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 match updates::update_checker::check_for_updates(handle.clone()).await {

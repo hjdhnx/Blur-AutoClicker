@@ -10,7 +10,7 @@
 - Failsafe (corner + edge) and custom stop zone sections have moved slightly.
 - Zero-click runs are no longer recorded to stats or printed to console in dev mode.
 - Flipped around On/Off toggle to Off/On in the settings.
-- Slightly reduced ram usage (-20ish% when no settings have been changed for a few minutes).
+- Slightly reduced ram usage (-30% to -60% when no settings have been changed for about 30 seconds).
 - Removed Translations due to the complexity of maintaining them (~80% user vote on removing them).
 ## Fixed
 - Click speed not being reached at high CPS (this time for real)
