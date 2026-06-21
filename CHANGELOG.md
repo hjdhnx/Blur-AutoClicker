@@ -1,4 +1,4 @@
-# v3.8.0 - 16.06.2026 (d.m.y)
+# v3.8.0 - 21.06.2026 (d.m.y)
 ## New
 - SUPPORT FOR CUSTOM BACKGROUND IMAGES! (Settings → Appearance → Background Image).
 - Process whitelist/blacklist with per-application Stop/Pause behavior in the Zones panel.
@@ -11,7 +11,7 @@
 - Failsafe (corner + edge) and custom stop zone sections have moved slightly.
 - Zero-click runs are no longer recorded to stats or printed to console in dev mode.
 - Flipped around On/Off toggle to Off/On in the settings.
-- Slightly reduced ram usage (-30% to -60% when no settings have been changed for about 30 seconds).
+- Slightly reduced ram usage (-40% to -65% when no settings have been changed for about 30 seconds).
 - Removed Translations due to the complexity of maintaining them (~80% user vote on removing them).
 ## Fixed
 - Click speed not being reached at high CPS (this time for real)
