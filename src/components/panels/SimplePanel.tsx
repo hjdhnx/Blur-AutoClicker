@@ -1,4 +1,9 @@
-import { type CSSProperties, type ChangeEvent, type ReactNode, type WheelEvent } from "react";
+import {
+  type CSSProperties,
+  type ChangeEvent,
+  type ReactNode,
+  type WheelEvent,
+} from "react";
 import type { MouseButton, Settings } from "../../store";
 
 import CadenceInput from "../CadenceInput";
@@ -155,7 +160,11 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
 
   const hasConflict =
     settings.inputType === "keyboard" &&
-    conflictsWithAutoPressKey(settings.hotkey, settings.keyboardKey, keyboardKeyCaseIsUpper);
+    conflictsWithAutoPressKey(
+      settings.hotkey,
+      settings.keyboardKey,
+      keyboardKeyCaseIsUpper,
+    );
   const hotkeyConflicts = hasConflict ? ["Auto-press key"] : [];
   const autoPressKeyConflicts = hasConflict ? ["Hotkey"] : [];
 
@@ -237,7 +246,7 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
                 onMouseButtonCapture={(mouseButton) =>
                   update({ inputType: "mouse", mouseButton })
                 }
-                style={{width: "90px"}}
+                style={{ width: "90px" }}
                 conflicts={autoPressKeyConflicts}
               />
               <button

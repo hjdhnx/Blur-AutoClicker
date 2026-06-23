@@ -377,7 +377,10 @@ export default function SequenceSection({
       // Keep wheel changes on focused number inputs local to the field and
       // prevent the parent list viewport from scrolling.
       // Unfocused inputs let the event through so the list scrolls instead.
-      if (target.closest("input.adv-number-sm") && target === document.activeElement) {
+      if (
+        target.closest("input.adv-number-sm") &&
+        target === document.activeElement
+      ) {
         event.preventDefault();
       }
     };
@@ -463,9 +466,7 @@ export default function SequenceSection({
           {showInfo ? (
             <InfoIcon text="Cycles through saved cursor positions in round-robin order, applying the current global timing and click settings at each point." />
           ) : null}
-          <span className="adv-card-title">
-            Sequence Clicking
-          </span>
+          <span className="adv-card-title">Sequence Clicking</span>
         </div>
         <ToggleBtn
           value={settings.sequenceEnabled}
@@ -492,9 +493,7 @@ export default function SequenceSection({
                   : startSequencePointPick());
               }}
             >
-              {pickingSequence
-                ? "Cancel Picking"
-                : "Start Picking"}
+              {pickingSequence ? "Cancel Picking" : "Start Picking"}
             </button>
             <div className="adv-sequence-list-shell">
               <div ref={listViewportRef} className="adv-sequence-list">

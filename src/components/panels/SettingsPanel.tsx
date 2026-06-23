@@ -16,7 +16,6 @@ import ChangelogContent from "../ChangelogContent";
 import {
   DEFAULT_MAX_CLICK_SPEED,
   DEFAULT_ACCENT_COLOR,
-  getMaxClickSpeed,
   MAX_PRESETS,
   PRESET_NAME_MAX_LENGTH,
 } from "../../settingsSchema";
@@ -53,7 +52,12 @@ interface Props {
   onDeletePreset: (presetId: PresetId) => boolean;
   onToggleAlwaysOnTop: () => Promise<void>;
   onReset: () => Promise<void>;
-  updateCheckStatus: "idle" | "checking" | "available" | "unavailable" | "error";
+  updateCheckStatus:
+    | "idle"
+    | "checking"
+    | "available"
+    | "unavailable"
+    | "error";
   onCheckForUpdate: () => void;
 }
 
@@ -189,9 +193,7 @@ function PresetRow({
           )}
           <div className="preset-badges">
             {isActive && (
-              <span className="preset-badge preset-badge--active">
-                Active
-              </span>
+              <span className="preset-badge preset-badge--active">Active</span>
             )}
             <span className="preset-badge">
               {new Date(preset.updatedAt).toLocaleDateString()}
@@ -301,7 +303,7 @@ export default function SettingsPanel({
   useEffect(() => {
     invoke<CumulativeStats>("get_stats")
       .then(setStats)
-      .catch(() => { });
+      .catch(() => {});
     invoke<boolean>("get_autostart_enabled")
       .then(setAutostartEnabled)
       .catch(() => setAutostartEnabled(false));
@@ -419,7 +421,6 @@ export default function SettingsPanel({
     { value: "wide" as const, label: "Wide" },
     { value: "tall" as const, label: "Tall" },
   ];
-  const maxClickSpeed = getMaxClickSpeed(settings.extendedClickSpeedLimit);
 
   const handleConfirmResetSettings = async () => {
     setResetting(true);
@@ -481,10 +482,7 @@ export default function SettingsPanel({
   return (
     <div className="settings-wrapper">
       <div className="settings-panel" ref={panelRef} onScroll={handleScroll}>
-        <SettingsCard
-          title="About"
-          description="Version and project links."
-        >
+        <SettingsCard title="About" description="Version and project links.">
           <div className="social-links">
             <span className="settings-label">Support Me</span>
             <div className="social-icons">
@@ -573,7 +571,7 @@ export default function SettingsPanel({
                 onClick={() => setShowChangelog((v) => !v)}
               >
                 <svg
-                  className={`changelog-arrow${showChangelog ? ' open' : ''}`}
+                  className={`changelog-arrow${showChangelog ? " open" : ""}`}
                   width="10"
                   height="10"
                   viewBox="0 0 10 10"
@@ -616,33 +614,25 @@ export default function SettingsPanel({
           {hasStats ? (
             <div className="stats-grid">
               <div className="stats-cell">
-                <span className="stats-cell-label">
-                  Total Clicks
-                </span>
+                <span className="stats-cell-label">Total Clicks</span>
                 <span className="stats-cell-value">
                   {formatNumber(stats.totalClicks, language)}
                 </span>
               </div>
               <div className="stats-cell">
-                <span className="stats-cell-label">
-                  Total Time Clicking
-                </span>
+                <span className="stats-cell-label">Total Time Clicking</span>
                 <span className="stats-cell-value">
                   {formatTime(stats.totalTimeSecs, language)}
                 </span>
               </div>
               <div className="stats-cell">
-                <span className="stats-cell-label">
-                  Average CPU
-                </span>
+                <span className="stats-cell-label">Average CPU</span>
                 <span className="stats-cell-value">
                   {formatCpu(stats.avgCpu, language, "N/A")}
                 </span>
               </div>
               <div className="stats-cell">
-                <span className="stats-cell-label">
-                  Sessions
-                </span>
+                <span className="stats-cell-label">Sessions</span>
                 <span className="stats-cell-value">
                   {formatNumber(stats.totalSessions, language)}
                 </span>
@@ -654,12 +644,8 @@ export default function SettingsPanel({
           {hasStats && (
             <div className="settings-row">
               <div className="settings-label-group">
-                <span className="settings-label">
-                  Clear Stats
-                </span>
-                <span className="settings-sublabel">
-                  Clear all usage data.
-                </span>
+                <span className="settings-label">Clear Stats</span>
+                <span className="settings-sublabel">Clear all usage data.</span>
               </div>
               <button
                 type="button"
@@ -672,10 +658,7 @@ export default function SettingsPanel({
           )}
         </SettingsCard>
 
-        <SettingsCard
-          title="Presets"
-          description="Save and load presets."
-        >
+        <SettingsCard title="Presets" description="Save and load presets.">
           <div className="settings-row settings-row--stacked">
             <div className="settings-label-group">
               <span className="settings-label">Presets</span>
@@ -721,14 +704,10 @@ export default function SettingsPanel({
               </button>
             </div>
             {presetLimitReached && (
-              <span className="settings-note">
-                Max 6 presets allowed
-              </span>
+              <span className="settings-note">Max 6 presets allowed</span>
             )}
             {running && (
-              <span className="settings-note">
-                Disabled while clicking
-              </span>
+              <span className="settings-note">Disabled while clicking</span>
             )}
             {settings.presets.length > 0 ? (
               <div className="preset-list-shell">
@@ -786,9 +765,7 @@ export default function SettingsPanel({
         >
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Always on Top
-              </span>
+              <span className="settings-label">Always on Top</span>
               <span className="settings-sublabel">
                 Keep the window above others.
               </span>
@@ -808,9 +785,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Stop Hitbox Overlay
-              </span>
+              <span className="settings-label">Stop Hitbox Overlay</span>
               <span className="settings-sublabel">
                 Show the stop zone boundaries.
               </span>
@@ -830,9 +805,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Stop Reason Alert
-              </span>
+              <span className="settings-label">Stop Reason Alert</span>
               <span className="settings-sublabel">
                 Show a notification when the auto clicker stops.
               </span>
@@ -852,9 +825,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Strict Hotkey Modifiers
-              </span>
+              <span className="settings-label">Strict Hotkey Modifiers</span>
               <span className="settings-sublabel">
                 Require exact modifier keys for hotkeys.
               </span>
@@ -876,9 +847,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Stop on Task Switcher
-              </span>
+              <span className="settings-label">Stop on Alt+Tab</span>
               <span className="settings-sublabel">
                 Stop clicking when switching to another window.
               </span>
@@ -900,11 +869,9 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Extended Click Speed Limit
-              </span>
+              <span className="settings-label">Extended Click Speed Limit</span>
               <span className="settings-sublabel">
-                Allow click speeds up to {maxClickSpeed} CPS (may affect performance).
+                Allow click speeds up to 1000 CPS (may affect performance).
               </span>
             </div>
             <div className="settings-seg-group">
@@ -929,9 +896,7 @@ export default function SettingsPanel({
         >
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Minimize to Tray
-              </span>
+              <span className="settings-label">Minimize to Tray</span>
               <span className="settings-sublabel">
                 Minimize to the system tray instead of the taskbar.
               </span>
@@ -951,9 +916,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Run on Startup
-              </span>
+              <span className="settings-label">Run on Startup</span>
               <span className="settings-sublabel">
                 Start clicking when the app opens.
               </span>
@@ -1003,9 +966,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Advanced Layout
-              </span>
+              <span className="settings-label">Advanced Layout</span>
               <span className="settings-sublabel">
                 Panel layout for sequence zones.
               </span>
@@ -1027,9 +988,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Accent Color
-              </span>
+              <span className="settings-label">Accent Color</span>
               <span className="settings-sublabel">
                 The primary accent color.
               </span>
@@ -1059,9 +1018,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Background Image
-              </span>
+              <span className="settings-label">Background Image</span>
               <span className="settings-sublabel">
                 Path or URL to a background image.
               </span>
@@ -1096,9 +1053,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Background Opacity
-              </span>
+              <span className="settings-label">Background Opacity</span>
               <span className="settings-sublabel">
                 Transparency of the background image.
               </span>
@@ -1125,9 +1080,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Panel Opacity
-              </span>
+              <span className="settings-label">Panel Opacity</span>
               <span className="settings-sublabel">
                 Transparency of the settings panel.
               </span>
@@ -1153,9 +1106,7 @@ export default function SettingsPanel({
 
           <div className="settings-row">
             <div className="settings-label-group">
-              <span className="settings-label">
-                Panel Blur
-              </span>
+              <span className="settings-label">Panel Blur</span>
               <span className="settings-sublabel">
                 Blur effect behind the panel.
               </span>

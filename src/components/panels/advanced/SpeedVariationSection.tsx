@@ -14,7 +14,6 @@ export default function SpeedVariationSection({
   update,
   showInfo,
 }: Props) {
-
   return (
     <div className="adv-sectioncontainer adv-basic-card">
       <div className="adv-card-header">

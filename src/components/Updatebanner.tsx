@@ -95,9 +95,7 @@ export default function UpdateBanner({
             onClick={handleUpdate}
             disabled={stage === "installing"}
           >
-            {stage === "installing"
-              ? "Installing..."
-              : "Download and Install"}
+            {stage === "installing" ? "Installing..." : "Download and Install"}
           </button>
         </UnavailableReason>
       )}

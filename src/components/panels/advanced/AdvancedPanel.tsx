@@ -42,15 +42,37 @@ function AdvancedPanel({
         className={`adv-columns ${isTallLayout ? "adv-columns--tall" : "adv-columns--wide"}`}
       >
         <div className="adv-col">
-          <CadenceSection settings={settings} update={update} showInfo={showInfo} />
-          <DutyCycleSection settings={settings} update={update} showInfo={showInfo} />
-          <LimitsSection settings={settings} update={update} showInfo={showInfo} />
-          <SpeedVariationSection settings={settings} update={update} showInfo={showInfo} />
-          <DoubleClickSection settings={settings} update={update} showInfo={showInfo} />
+          <CadenceSection
+            settings={settings}
+            update={update}
+            showInfo={showInfo}
+          />
+          <DutyCycleSection
+            settings={settings}
+            update={update}
+            showInfo={showInfo}
+          />
+          <LimitsSection
+            settings={settings}
+            update={update}
+            showInfo={showInfo}
+          />
+          <SpeedVariationSection
+            settings={settings}
+            update={update}
+            showInfo={showInfo}
+          />
+          <DoubleClickSection
+            settings={settings}
+            update={update}
+            showInfo={showInfo}
+          />
           {isTallLayout && sequenceSection}
         </div>
 
-        {!isTallLayout && <div className="adv-col adv-col--sequence">{sequenceSection}</div>}
+        {!isTallLayout && (
+          <div className="adv-col adv-col--sequence">{sequenceSection}</div>
+        )}
       </div>
     </div>
   );

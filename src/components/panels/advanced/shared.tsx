@@ -18,48 +18,54 @@ import UnavailableReason from "../../UnavailableReason";
 
 // ToggleBtn ← These are here just for some visual space
 
-const ToggleBtn = memo(function ToggleBtn({
-  value,
-  onChange,
-  disabled = false,
-  disabledReason,
-}: {
-  value: boolean;
-  onChange: (v: boolean) => void;
-  disabled?: boolean;
-  disabledReason?: string;
-}) {
-  useEffect(() => {
-    if (disabled && value) {
-      onChange(false);
-    }
-  }, [disabled, value, onChange]);
+const ToggleBtn = memo(
+  function ToggleBtn({
+    value,
+    onChange,
+    disabled = false,
+    disabledReason,
+  }: {
+    value: boolean;
+    onChange: (v: boolean) => void;
+    disabled?: boolean;
+    disabledReason?: string;
+  }) {
+    useEffect(() => {
+      if (disabled && value) {
+        onChange(false);
+      }
+    }, [disabled, value, onChange]);
 
-  const group = (
-    <div className="adv-toggle-group">
-      <button
-        className={`adv-toggle-btn adv-toggle-off ${!value ? "active" : ""} ${disabled ? "adv-disabled" : ""}`}
-        onClick={() => !disabled && onChange(false)}
-        disabled={disabled}
-      >
-        Off
-      </button>
-      <button
-        className={`adv-toggle-btn adv-toggle-on ${value ? "active" : ""} ${disabled ? "adv-disabled" : ""}`}
-        onClick={() => !disabled && onChange(true)}
-        disabled={disabled}
-      >
-        On
-      </button>
-    </div>
-  );
+    const group = (
+      <div className="adv-toggle-group">
+        <button
+          className={`adv-toggle-btn adv-toggle-off ${!value ? "active" : ""} ${disabled ? "adv-disabled" : ""}`}
+          onClick={() => !disabled && onChange(false)}
+          disabled={disabled}
+        >
+          Off
+        </button>
+        <button
+          className={`adv-toggle-btn adv-toggle-on ${value ? "active" : ""} ${disabled ? "adv-disabled" : ""}`}
+          onClick={() => !disabled && onChange(true)}
+          disabled={disabled}
+        >
+          On
+        </button>
+      </div>
+    );
 
-  return disabled ? (
-    <UnavailableReason reason={disabledReason}>{group}</UnavailableReason>
-  ) : (
-    group
-  );
-}, (prev, next) => prev.value === next.value && prev.disabled === next.disabled && prev.disabledReason === next.disabledReason);
+    return disabled ? (
+      <UnavailableReason reason={disabledReason}>{group}</UnavailableReason>
+    ) : (
+      group
+    );
+  },
+  (prev, next) =>
+    prev.value === next.value &&
+    prev.disabled === next.disabled &&
+    prev.disabledReason === next.disabledReason,
+);
 
 export { ToggleBtn };
 
@@ -156,7 +162,9 @@ export function NumInput({
     else if (e.shiftKey) step = 5;
     wheelRef.current = true;
     onChange(clampValue(current + direction * step));
-    setTimeout(() => { wheelRef.current = false; }, 0);
+    setTimeout(() => {
+      wheelRef.current = false;
+    }, 0);
   };
 
   return (
@@ -432,7 +440,10 @@ export function AdvDropdown({
     const currentIndex = options.findIndex((o) => o.value === value);
     if (currentIndex === -1) return;
     const direction = e.deltaY < 0 ? -1 : 1;
-    const nextIndex = Math.max(0, Math.min(options.length - 1, currentIndex + direction));
+    const nextIndex = Math.max(
+      0,
+      Math.min(options.length - 1, currentIndex + direction),
+    );
     if (nextIndex !== currentIndex) {
       onChange(options[nextIndex].value);
     }
