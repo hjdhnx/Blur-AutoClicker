@@ -1,6 +1,9 @@
 import type { Settings } from "../../../store";
 
-import { getEffectiveClicksPerSecond, isDoubleClickSupported } from "../../../cadence";
+import {
+  getEffectiveClicksPerSecond,
+  isDoubleClickSupported,
+} from "../../../cadence";
 import { InfoIcon, ToggleBtn } from "./shared";
 
 interface Props {
@@ -24,7 +27,6 @@ export default function DoubleClickSection({
   update,
   showInfo,
 }: Props) {
-
   const currentClicksPerSecond = getEffectiveClicksPerSecond({
     clickInterval: settings.clickInterval,
     clickSpeed: settings.clickSpeed,

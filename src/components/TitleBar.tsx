@@ -248,9 +248,7 @@ export default function TitleBar({
           }}
           active={isAlwaysOnTop}
           title={
-            isAlwaysOnTop
-              ? "Disable Always on Top"
-              : "Enable Always on Top"
+            isAlwaysOnTop ? "Disable Always on Top" : "Enable Always on Top"
           }
           label={
             <svg

@@ -153,7 +153,10 @@ export default function KeyCaptureInput({
   const stateClass = getStateClass(listening, hasConflict, !!value);
 
   return (
-    <div className={`hk-wrapper ${stateClass} ${className ?? ""}`} style={style}>
+    <div
+      className={`hk-wrapper ${stateClass} ${className ?? ""}`}
+      style={style}
+    >
       <button
         ref={inputRef}
         type="button"
@@ -170,9 +173,7 @@ export default function KeyCaptureInput({
           }
         }}
         title={
-          hasConflict
-            ? `Already bound to: ${conflicts!.join(", ")}`
-            : undefined
+          hasConflict ? `Already bound to: ${conflicts!.join(", ")}` : undefined
         }
       >
         {displayText}

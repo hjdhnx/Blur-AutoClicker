@@ -5,7 +5,14 @@ import {
   getCurrentWindow,
   LogicalSize,
 } from "@tauri-apps/api/window";
-import { lazy, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  lazy,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { applyAccentTheme } from "./accentTheme";
 import UpdateBanner from "./components/Updatebanner";
 import { canonicalizeHotkeyForBackend } from "./hotkeys";
@@ -276,46 +283,49 @@ export default function App() {
     queueHotkeyRegistrationRef.current = queueHotkeyRegistration;
   });
 
-  const updateSettings = useCallback((
-    patch: Partial<Settings>,
-    options: UpdateSettingsOptions = {},
-  ) => {
-    const { hotkey, ...rest } = patch;
-    const shouldClearActivePreset =
-      !options.preserveActivePreset &&
-      (hotkey !== undefined ||
-        Object.keys(rest).some((key) => OPERATIONAL_SETTING_KEYS.has(key)));
+  const updateSettings = useCallback(
+    (patch: Partial<Settings>, options: UpdateSettingsOptions = {}) => {
+      const { hotkey, ...rest } = patch;
+      const shouldClearActivePreset =
+        !options.preserveActivePreset &&
+        (hotkey !== undefined ||
+          Object.keys(rest).some((key) => OPERATIONAL_SETTING_KEYS.has(key)));
 
-    const restPatch: Partial<Settings> = { ...rest };
-    if (
-      shouldClearActivePreset &&
-      patch.activePresetId === undefined &&
-      committedSettingsRef.current.activePresetId !== null
-    ) {
-      restPatch.activePresetId = null;
-    }
+      const restPatch: Partial<Settings> = { ...rest };
+      if (
+        shouldClearActivePreset &&
+        patch.activePresetId === undefined &&
+        committedSettingsRef.current.activePresetId !== null
+      ) {
+        restPatch.activePresetId = null;
+      }
 
-    if (Object.keys(restPatch).length > 0) {
-      const nextUiSettings = sanitizeSettings(
-        { ...uiSettingsRef.current, ...restPatch },
-        APP_VERSION,
-      );
-      const nextCommittedSettings = sanitizeSettings(
-        { ...committedSettingsRef.current, ...restPatch },
-        APP_VERSION,
-      );
+      if (Object.keys(restPatch).length > 0) {
+        const nextUiSettings = sanitizeSettings(
+          { ...uiSettingsRef.current, ...restPatch },
+          APP_VERSION,
+        );
+        const nextCommittedSettings = sanitizeSettings(
+          { ...committedSettingsRef.current, ...restPatch },
+          APP_VERSION,
+        );
 
-      persistCommittedSettingsRef.current(nextCommittedSettings, nextUiSettings);
-    }
+        persistCommittedSettingsRef.current(
+          nextCommittedSettings,
+          nextUiSettings,
+        );
+      }
 
-    if (hotkey !== undefined) {
-      setUiSettingsRef.current({
-        ...uiSettingsRef.current,
-        hotkey,
-      });
-      queueHotkeyRegistrationRef.current(hotkey);
-    }
-  }, []);
+      if (hotkey !== undefined) {
+        setUiSettingsRef.current({
+          ...uiSettingsRef.current,
+          hotkey,
+        });
+        queueHotkeyRegistrationRef.current(hotkey);
+      }
+    },
+    [],
+  );
 
   const applyStartupWindowPlacement = async () => {
     await getCurrentWindow().center();
@@ -713,9 +723,11 @@ export default function App() {
                 resizeTimeout.current = null;
               }
               if (!cancelled) {
-                appWindow.setSize(new LogicalSize(width, windowHeight)).catch((err) => {
-                  console.error("Failed to finalize window resize:", err);
-                });
+                appWindow
+                  .setSize(new LogicalSize(width, windowHeight))
+                  .catch((err) => {
+                    console.error("Failed to finalize window resize:", err);
+                  });
               }
             }
           };
@@ -727,9 +739,11 @@ export default function App() {
               root.removeEventListener("transitionend", transitionHandler);
             }
             if (!cancelled) {
-              appWindow.setSize(new LogicalSize(width, windowHeight)).catch((err) => {
-                console.error("Failed to finalize window resize:", err);
-              });
+              appWindow
+                .setSize(new LogicalSize(width, windowHeight))
+                .catch((err) => {
+                  console.error("Failed to finalize window resize:", err);
+                });
             }
             resizeTimeout.current = null;
           }, 350);
@@ -762,7 +776,13 @@ export default function App() {
         resizeTimeout.current = null;
       }
     };
-  }, [tab, updateInfo, dropdownOverflowBottom, settingsLoaded, settings.advancedSequenceLayout]);
+  }, [
+    tab,
+    updateInfo,
+    dropdownOverflowBottom,
+    settingsLoaded,
+    settings.advancedSequenceLayout,
+  ]);
 
   useEffect(() => {
     const check = async () => {
@@ -831,14 +851,37 @@ export default function App() {
     if (!root) return;
 
     const panelOpacity = settings.panelOpacity / 100;
-    const colors = settings.theme === "light"
-      ? { surface: "255, 255, 255", elevated: "242, 242, 242", input: "217, 217, 217", inputOff: "217, 217, 217" }
-      : { surface: "26, 26, 26",    elevated: "38, 38, 38",    input: "59, 59, 59",    inputOff: "51, 51, 51" };
+    const colors =
+      settings.theme === "light"
+        ? {
+            surface: "255, 255, 255",
+            elevated: "242, 242, 242",
+            input: "217, 217, 217",
+            inputOff: "217, 217, 217",
+          }
+        : {
+            surface: "26, 26, 26",
+            elevated: "38, 38, 38",
+            input: "59, 59, 59",
+            inputOff: "51, 51, 51",
+          };
 
-    root.style.setProperty("--bg-surface", `rgba(${colors.surface}, ${panelOpacity})`);
-    root.style.setProperty("--bg-elevated", `rgba(${colors.elevated}, ${panelOpacity})`);
-    root.style.setProperty("--bg-input", `rgba(${colors.input}, ${panelOpacity})`);
-    root.style.setProperty("--bg-input-off", `rgba(${colors.inputOff}, ${panelOpacity})`);
+    root.style.setProperty(
+      "--bg-surface",
+      `rgba(${colors.surface}, ${panelOpacity})`,
+    );
+    root.style.setProperty(
+      "--bg-elevated",
+      `rgba(${colors.elevated}, ${panelOpacity})`,
+    );
+    root.style.setProperty(
+      "--bg-input",
+      `rgba(${colors.input}, ${panelOpacity})`,
+    );
+    root.style.setProperty(
+      "--bg-input-off",
+      `rgba(${colors.inputOff}, ${panelOpacity})`,
+    );
     root.style.setProperty("--bg-panel-blur", `${settings.panelBlur}px`);
 
     return () => {
@@ -859,10 +902,17 @@ export default function App() {
 
     if (!img) {
       root.style.setProperty("--bg-image", "none");
-    } else if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:")) {
+    } else if (
+      img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:")
+    ) {
       root.style.setProperty("--bg-image", `url("${escape(img)}")`);
     } else {
-      root.style.setProperty("--bg-image", `url("${escape(convertFileSrc(img))}")`);
+      root.style.setProperty(
+        "--bg-image",
+        `url("${escape(convertFileSrc(img))}")`,
+      );
     }
   }, [settings.backgroundImage]);
 
@@ -893,7 +943,7 @@ export default function App() {
 
       await invoke("reset_settings");
       await clearSavedSettings();
-      await invoke("set_autostart_enabled", { enabled: false }).catch(() => { });
+      await invoke("set_autostart_enabled", { enabled: false }).catch(() => {});
       await getCurrentWindow().setAlwaysOnTop(DEFAULT_SETTINGS.alwaysOnTop);
 
       lastValidHotkeyRef.current = DEFAULT_SETTINGS.hotkey;
@@ -917,68 +967,69 @@ export default function App() {
 
   return (
     <div className="app-root" data-tab={tab}>
-        <TitleBar
-          tab={tab}
-          setTab={handleTabChange}
-          running={status.running}
-          paused={status.paused}
-          stopReason={
-            settings.showStopReason && (tab === "simple" || tab === "advanced" || tab === "zones")
-              ? status.stopReason
-              : null
-          }
-          stopKey={stopKey}
-          warning={status.warning}
-          isAlwaysOnTop={settings.alwaysOnTop}
-          onToggleAlwaysOnTop={handleToggleAlwaysOnTop}
-          onRequestClose={handleWindowClose}
+      <TitleBar
+        tab={tab}
+        setTab={handleTabChange}
+        running={status.running}
+        paused={status.paused}
+        stopReason={
+          settings.showStopReason &&
+          (tab === "simple" || tab === "advanced" || tab === "zones")
+            ? status.stopReason
+            : null
+        }
+        stopKey={stopKey}
+        warning={status.warning}
+        isAlwaysOnTop={settings.alwaysOnTop}
+        onToggleAlwaysOnTop={handleToggleAlwaysOnTop}
+        onRequestClose={handleWindowClose}
+      />
+      {updateInfo && (
+        <UpdateBanner
+          key={`${updateInfo.currentVersion}:${updateInfo.latestVersion}`}
+          currentVersion={updateInfo.currentVersion}
+          latestVersion={updateInfo.latestVersion}
         />
-        {updateInfo && (
-          <UpdateBanner
-            key={`${updateInfo.currentVersion}:${updateInfo.latestVersion}`}
-            currentVersion={updateInfo.currentVersion}
-            latestVersion={updateInfo.latestVersion}
+      )}
+      <main className="panel-area">
+        {tab === "simple" && (
+          <SimplePanel settings={settings} update={updateSettings} />
+        )}
+        {tab === "advanced" && (
+          <AdvancedPanel
+            settings={settings}
+            update={updateSettings}
+            showInfo={true}
+            running={status.running}
+            activeSequenceIndex={status.activeSequenceIndex}
+            activeSequenceTick={status.activeSequenceTick}
           />
         )}
-        <main className="panel-area">
-          {tab === "simple" && (
-            <SimplePanel settings={settings} update={updateSettings} />
-          )}
-          {tab === "advanced" && (
-            <AdvancedPanel
-              settings={settings}
-              update={updateSettings}
-              showInfo={true}
-              running={status.running}
-              activeSequenceIndex={status.activeSequenceIndex}
-              activeSequenceTick={status.activeSequenceTick}
-            />
-          )}
-          {tab === "zones" && (
-            <ZonesPanel
-              settings={settings}
-              update={updateSettings}
-              showInfo={true}
-            />
-          )}
-          {tab === "settings" && (
-            <SettingsPanel
-              settings={settings}
-              update={updateSettings}
-              running={status.running}
-              appInfo={appInfo}
-              onSavePreset={handleSavePreset}
-              onApplyPreset={handleApplyPreset}
-              onUpdatePreset={handleUpdatePreset}
-              onRenamePreset={handleRenamePreset}
-              onDeletePreset={handleDeletePreset}
-              onToggleAlwaysOnTop={handleToggleAlwaysOnTop}
-              onReset={handleResetSettings}
-              updateCheckStatus={updateCheckStatus}
-              onCheckForUpdate={handleCheckForUpdate}
-            />
-          )}
-        </main>
-      </div>
+        {tab === "zones" && (
+          <ZonesPanel
+            settings={settings}
+            update={updateSettings}
+            showInfo={true}
+          />
+        )}
+        {tab === "settings" && (
+          <SettingsPanel
+            settings={settings}
+            update={updateSettings}
+            running={status.running}
+            appInfo={appInfo}
+            onSavePreset={handleSavePreset}
+            onApplyPreset={handleApplyPreset}
+            onUpdatePreset={handleUpdatePreset}
+            onRenamePreset={handleRenamePreset}
+            onDeletePreset={handleDeletePreset}
+            onToggleAlwaysOnTop={handleToggleAlwaysOnTop}
+            onReset={handleResetSettings}
+            updateCheckStatus={updateCheckStatus}
+            onCheckForUpdate={handleCheckForUpdate}
+          />
+        )}
+      </main>
+    </div>
   );
 }

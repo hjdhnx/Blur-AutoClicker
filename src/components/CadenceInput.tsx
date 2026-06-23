@@ -198,9 +198,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
               }
             />
             <div className="vertical-devider vertical-devider--stretch" />
-            <span className="simple-control-label">
-              Clicks Per
-            </span>
+            <span className="simple-control-label">Clicks Per</span>
             <div className="vertical-devider vertical-devider--stretch" />
             <AdvDropdown
               value={settings.clickInterval}

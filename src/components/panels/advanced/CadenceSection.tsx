@@ -100,7 +100,11 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
 
   const hasConflict =
     settings.inputType === "keyboard" &&
-    conflictsWithAutoPressKey(settings.hotkey, settings.keyboardKey, keyboardKeyCaseIsUpper);
+    conflictsWithAutoPressKey(
+      settings.hotkey,
+      settings.keyboardKey,
+      keyboardKeyCaseIsUpper,
+    );
   const hotkeyConflicts = hasConflict ? ["Auto-press key"] : [];
   const autoPressKeyConflicts = hasConflict ? ["Hotkey"] : [];
 
@@ -186,9 +190,7 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
             />
           ) : null}
           <span className="adv-label">
-            {settings.inputType === "mouse"
-              ? "Mouse Button"
-              : "Keyboard Key"}
+            {settings.inputType === "mouse" ? "Mouse Button" : "Keyboard Key"}
           </span>
         </div>
         <div className="adv-target-controls">
