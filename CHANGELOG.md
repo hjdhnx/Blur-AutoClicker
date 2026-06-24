@@ -2,6 +2,7 @@
 ## Changed
 - Right aligned Items in Limits section in advanced panel. (ik, big change)
 ## Fixed
+- Fixed program sometimes launching with a blank window.
 - Fixed program crash when clicking into Zones panel.
 
 # v3.8.1 - 23.06.2026 (d.m.y)
