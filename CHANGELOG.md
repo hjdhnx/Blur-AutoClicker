@@ -1,3 +1,9 @@
+# v3.8.2 - 23.06.2026 (d.m.y)
+## Changed
+- Right aligned Items in Limits section in advanced panel. (ik, big change)
+## Fixed
+- Fixed program crash when clicking into Zones panel.
+
 # v3.8.1 - 23.06.2026 (d.m.y)
 ## Changed
 - Updated wording for extended click speed limit description.
