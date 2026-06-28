@@ -1,4 +1,5 @@
 import type { ChangeEvent, CSSProperties, FocusEvent, WheelEvent } from "react";
+import { useState } from "react";
 import "./panels/advanced/AdvancedPanel.css";
 import { RATE_INPUT_MODE_OPTIONS } from "../cadence";
 import { convertDurationToRate, convertRateToDuration } from "../cadence";
@@ -122,6 +123,8 @@ function DurationField({
 export default function CadenceInput({ settings, update, variant }: Props) {
   const maxClickSpeed = getMaxClickSpeed(settings.extendedClickSpeedLimit);
 
+  const [draftCps, setDraftCps] = useState<string | null>(null);
+
   const switchMode = (mode: RateInputMode) => {
     if (mode === settings.rateInputMode) return;
 
@@ -173,20 +176,31 @@ export default function CadenceInput({ settings, update, variant }: Props) {
             <input
               type="number"
               className="simple-inline-input simple-cadence-input"
-              value={settings.clickSpeed}
+              value={draftCps ?? settings.clickSpeed}
               min={1}
               max={maxClickSpeed}
               aria-label="Clicks Per"
-              onChange={(event) =>
-                handleNumberChange(event, (next) =>
-                  updateSimpleCadence({ clickSpeed: next }),
-                )
-              }
-              onBlur={(event) =>
+              onChange={(event) => {
+                const raw = event.target.value;
+                if (raw === "") {
+                  setDraftCps("");
+                } else {
+                  const normalized = normalizeIntegerRaw(raw);
+                  if (normalized !== raw) event.target.value = normalized;
+                  if (normalized === "" || normalized === "-") {
+                    setDraftCps(normalized);
+                    return;
+                  }
+                  setDraftCps(null);
+                  updateSimpleCadence({ clickSpeed: Number(normalized) });
+                }
+              }}
+              onBlur={(event) => {
+                setDraftCps(null);
                 handleNumberBlur(event, 1, maxClickSpeed, (next) =>
                   updateSimpleCadence({ clickSpeed: next }),
-                )
-              }
+                );
+              }}
               onWheel={(event) =>
                 handleWheelStep(
                   event,
@@ -316,20 +330,31 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                 <input
                   type="number"
                   className="adv-number-sm"
-                  value={settings.clickSpeed}
+                  value={draftCps ?? settings.clickSpeed}
                   min={1}
                   max={maxClickSpeed}
                   style={{ width: "40px", textAlign: "right" }}
-                  onChange={(event) =>
-                    handleNumberChange(event, (next) =>
-                      update({ clickSpeed: next }),
-                    )
-                  }
-                  onBlur={(event) =>
+                  onChange={(event) => {
+                    const raw = event.target.value;
+                    if (raw === "") {
+                      setDraftCps("");
+                    } else {
+                      const normalized = normalizeIntegerRaw(raw);
+                      if (normalized !== raw) event.target.value = normalized;
+                      if (normalized === "" || normalized === "-") {
+                        setDraftCps(normalized);
+                        return;
+                      }
+                      setDraftCps(null);
+                      update({ clickSpeed: Number(normalized) });
+                    }
+                  }}
+                  onBlur={(event) => {
+                    setDraftCps(null);
                     handleNumberBlur(event, 1, maxClickSpeed, (next) =>
                       update({ clickSpeed: next }),
-                    )
-                  }
+                    );
+                  }}
                   onWheel={(event) =>
                     handleWheelStep(
                       event,
