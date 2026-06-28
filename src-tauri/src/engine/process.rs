@@ -392,10 +392,16 @@ mod tests {
 
     #[test]
     fn truncate_title_handles_multibyte_at_old_byte_boundary() {
-        let title = format!("{}Тест, привіт, дякую", "a".repeat(44));
+        let title = format!(
+            "{}Тест, привіт, дякую",
+            "a".repeat(PROCESS_DISPLAY_TITLE_MAX_CHARS - 1)
+        );
         let truncated = truncate_title_for_display(&title);
 
-        assert_eq!(truncated, format!("{}Т", "a".repeat(44)));
+        assert_eq!(
+            truncated,
+            format!("{}Т", "a".repeat(PROCESS_DISPLAY_TITLE_MAX_CHARS - 1))
+        );
         assert!(truncated.is_char_boundary(truncated.len()));
     }
 }
