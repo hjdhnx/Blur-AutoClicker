@@ -47,7 +47,7 @@
     "bundle": {
       "active": true,
       "targets": "nsis",
-      "createUpdaterArtifacts": true,
+      "createUpdaterArtifacts": false,
       "publisher": "Blur009",
       "copyright": "Copyright (c) Blur009",
       "category": "Utility",
@@ -71,7 +71,7 @@
   "bundle": {
     "active": true,
     "targets": "nsis",
-    "createUpdaterArtifacts": true,
+    "createUpdaterArtifacts": false,
     "icon": [
       "icons/icon.ico"
     ],
