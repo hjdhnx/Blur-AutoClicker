@@ -110,15 +110,15 @@
         <div id="zone-layer" class="overlay-layer"></div>
         <div id="sequence-layer" class="overlay-layer"></div>
         <div id="pick-prompt" class="overlay-prompt">
-            Right click to add point.
-            <span>Shift + right click to add multiple.</span>
-            <span>Ctrl + right click to delete a point.</span>
-            <span>Esc to cancel.</span>
+            <span data-i18n="pick.addPoint">Right click to add point.</span>
+            <span data-i18n="pick.addMultiple">Shift + right click to add multiple.</span>
+            <span data-i18n="pick.deletePoint">Ctrl + right click to delete a point.</span>
+            <span data-i18n="pick.cancel">Esc to cancel.</span>
         </div>
         <div id="stop-zone-prompt" class="overlay-prompt">
-            Right click and drag to draw stop zone.
-            <span>Release to save.</span>
-            <span>Esc to cancel.</span>
+            <span data-i18n="stopZone.draw">Right click and drag to draw stop zone.</span>
+            <span data-i18n="stopZone.release">Release to save.</span>
+            <span data-i18n="stopZone.cancel">Esc to cancel.</span>
         </div>
     </div>
 
@@ -395,6 +395,10 @@
         } else {
             setupTauriListener();
         }
+    </script>
+
+    <script type="module">
+        import "./src/overlay/i18n.ts";
     </script>
 </body>
 </html>

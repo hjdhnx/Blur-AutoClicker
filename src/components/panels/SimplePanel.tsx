@@ -4,6 +4,7 @@ import {
   type ReactNode,
   type WheelEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import type { MouseButton, Settings } from "../../store";
 
 import CadenceInput from "../CadenceInput";
@@ -92,6 +93,7 @@ function NumberField({
   onChange: (next: number) => void;
   width: string;
 }) {
+  const { t } = useTranslation();
   return (
     <>
       <span className="simple-control-label">{label}</span>
@@ -126,25 +128,26 @@ function NumberField({
           handleWheelStep(event, value, min, max, (next) => onChange(next))
         }
       />
-      <div className="postfix">%</div>
+      <div className="postfix">{t("common:unit.percent")}</div>
     </>
   );
 }
 
 function SimplePanel({ settings, update }: SimplePanelProps) {
+  const { t } = useTranslation();
   const clickModeOptions = MODE_OPTIONS.map((mode) => ({
     value: mode,
-    label: mode === "Toggle" ? "Toggle" : "Hold",
+    label: t(`common:options.mode.${mode.toLowerCase()}`),
   }));
 
   const mouseButtonOptions = MOUSE_BUTTON_OPTIONS.map((button) => ({
     value: button,
-    label: button,
+    label: t(`common:options.mouseButton.${button.toLowerCase()}`),
   }));
 
   const inputTypeOptions = [
-    { value: "mouse", label: "Mouse" },
-    { value: "keyboard", label: "Key" },
+    { value: "mouse", label: t("common:options.inputType.mouse") },
+    { value: "keyboard", label: t("common:options.inputType.keyboard") },
   ] as const;
   const canToggleKeyboardKeyCase = isAlphabeticKeyboardKey(
     settings.keyboardKey,
@@ -165,8 +168,12 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
       settings.keyboardKey,
       keyboardKeyCaseIsUpper,
     );
-  const hotkeyConflicts = hasConflict ? ["Auto-press key"] : [];
-  const autoPressKeyConflicts = hasConflict ? ["Hotkey"] : [];
+  const hotkeyConflicts = hasConflict
+    ? [t("common:controls.conflictAutoPress")]
+    : [];
+  const autoPressKeyConflicts = hasConflict
+    ? [t("common:controls.conflictHotkey")]
+    : [];
 
   return (
     <div className="vcontainer simple-panel">
@@ -258,11 +265,11 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
                 }`}
                 aria-label={
                   keyboardKeyCaseIsUpper
-                    ? "Send letters as uppercase"
-                    : "Send letters as lowercase"
+                    ? t("common:controls.keyboardCaseUpper")
+                    : t("common:controls.keyboardCaseLower")
                 }
                 aria-pressed={keyboardKeyCaseIsUpper}
-                title="Toggle keyboard key case"
+                title={t("common:controls.keyboardCaseToggle")}
                 disabled={!canToggleKeyboardKeyCase}
                 onClick={toggleKeyboardKeyCase}
               >
@@ -274,7 +281,7 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
 
         <ControlBox className="simple-row-item">
           <NumberField
-            label="Click Duration"
+            label={t("advanced:dutyCycle.label")}
             value={settings.dutyCycle}
             min={SETTINGS_LIMITS.dutyCycle.min!}
             max={SETTINGS_LIMITS.dutyCycle.max!}
@@ -285,7 +292,7 @@ function SimplePanel({ settings, update }: SimplePanelProps) {
 
         <ControlBox className="simple-row-item">
           <NumberField
-            label="Speed Variation"
+            label={t("advanced:speedVariation.label")}
             value={settings.speedVariation}
             min={SETTINGS_LIMITS.speedVariation.min!}
             max={SETTINGS_LIMITS.speedVariation.max!}

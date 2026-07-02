@@ -6,6 +6,7 @@ export type ClickMode = "Toggle" | "Hold";
 export type TimeLimitUnit = "s" | "m" | "h";
 export type SavedPanel = "simple" | "advanced" | "zones";
 export type Theme = "dark" | "light";
+export type Language = "en" | "zh";
 export type PresetId = string;
 export type RateInputMode = "rate" | "duration";
 export type ProcessListMode = "whitelist" | "blacklist";
@@ -56,6 +57,10 @@ export const THEME_OPTIONS = [
   "dark",
   "light",
 ] as const satisfies ReadonlyArray<Theme>;
+export const LANGUAGE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "zh", label: "简体中文" },
+] as const satisfies ReadonlyArray<{ value: Language; label: string }>;
 
 type LimitDef = {
   min?: number;
@@ -334,6 +339,10 @@ const SETTINGS_ONLY_FIELDS = {
     default: "dark" as Theme,
     ui: { section: "appearance", control: "select" },
   },
+  language: {
+    default: "en" as Language,
+    ui: { section: "appearance", control: "select" },
+  },
   advancedSequenceLayout: {
     default: "wide" as AdvancedSequenceLayout,
     ui: { section: "appearance", control: "select" },
@@ -469,7 +478,7 @@ export const SETTINGS_UI_SCHEMA = [
   },
   {
     id: "appearance",
-    fields: ["theme", "advancedSequenceLayout", "accentColor"],
+    fields: ["theme", "language", "advancedSequenceLayout", "accentColor"],
   },
   {
     id: "presets",
@@ -581,6 +590,14 @@ function sanitizeSavedPanel(value: unknown, fallback: SavedPanel) {
 
 function sanitizeTheme(value: unknown, fallback: Theme) {
   return sanitizeEnum(value, fallback, THEME_OPTIONS);
+}
+
+function sanitizeLanguage(value: unknown, fallback: Language) {
+  return sanitizeEnum(
+    value,
+    fallback,
+    LANGUAGE_OPTIONS.map((option) => option.value),
+  );
 }
 
 function sanitizeAdvancedSequenceLayout(
@@ -854,6 +871,7 @@ export function sanitizeSettings(
     defaults.lastPanel,
   );
   settingsOnly.theme = sanitizeTheme(saved.theme, defaults.theme);
+  settingsOnly.language = sanitizeLanguage(saved.language, defaults.language);
   settingsOnly.advancedSequenceLayout = sanitizeAdvancedSequenceLayout(
     saved.advancedSequenceLayout,
     defaults.advancedSequenceLayout,

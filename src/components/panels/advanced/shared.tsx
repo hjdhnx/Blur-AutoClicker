@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 import { normalizeIntegerRaw } from "../../../numberInput";
 import UnavailableReason from "../../UnavailableReason";
@@ -30,6 +31,7 @@ const ToggleBtn = memo(
     disabled?: boolean;
     disabledReason?: string;
   }) {
+    const { t } = useTranslation();
     useEffect(() => {
       if (disabled && value) {
         onChange(false);
@@ -43,14 +45,14 @@ const ToggleBtn = memo(
           onClick={() => !disabled && onChange(false)}
           disabled={disabled}
         >
-          Off
+          {t("common:toggle.off")}
         </button>
         <button
           className={`adv-toggle-btn adv-toggle-on ${value ? "active" : ""} ${disabled ? "adv-disabled" : ""}`}
           onClick={() => !disabled && onChange(true)}
           disabled={disabled}
         >
-          On
+          {t("common:toggle.on")}
         </button>
       </div>
     );
@@ -80,12 +82,15 @@ export function Disableable({
   disabledReason?: string;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
   const content = (
     <div className="adv-disabled-container">
       <div className={enabled ? "" : "adv-disabled-content"}>{children}</div>
       {!enabled && (
         <div className="adv-disabled-overlay">
-          <span className="adv-disabled-label">Disabled</span>
+          <span className="adv-disabled-label">
+            {t("common:toggle.disabled")}
+          </span>
         </div>
       )}
     </div>

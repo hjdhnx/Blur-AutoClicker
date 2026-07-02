@@ -8,6 +8,8 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { Tab } from "../App";
 
 import "./TitleBar.css";
@@ -25,6 +27,7 @@ interface Props {
   running: boolean;
   paused: boolean;
   stopReason?: string | null;
+  stopReasonValue?: number | null;
   stopKey: number;
   isAlwaysOnTop: boolean;
   onToggleAlwaysOnTop: () => Promise<void>;
@@ -40,7 +43,6 @@ type TabIconProps = {
 
 type TabItem = {
   value: NavTab;
-  label: string;
   color: string;
   activeBg: string;
   activeFocusRing: string;
@@ -59,40 +61,13 @@ const DEFAULT_TITLE_STATE: TitleViewState = {
   isReason: false,
 };
 
-const STOP_REASON_TEXTS: Record<string, string> = {
-  "Stopped from UI": "Stopped from UI",
-  "Stopped from toggle": "Stopped from toggle",
-  "Stopped from hotkey": "Stopped from hotkey",
-  "Stopped from hold hotkey": "Stopped from hold hotkey",
-  Stopped: "Stopped",
-  "Top-left corner failsafe": "Top-left corner failsafe",
-  "Top-right corner failsafe": "Top-right corner failsafe",
-  "Bottom-left corner failsafe": "Bottom-left corner failsafe",
-  "Bottom-right corner failsafe": "Bottom-right corner failsafe",
-  "Top edge failsafe": "Top edge failsafe",
-  "Right edge failsafe": "Right edge failsafe",
-  "Bottom edge failsafe": "Bottom edge failsafe",
-  "Left edge failsafe": "Left edge failsafe",
-  "Blocked by Alt+Tab": "Blocked by Alt+Tab",
-  "Blocked by process list": "Blocked by process list",
-};
-
-function translateStopReason(stopReason: string | null | undefined): string {
+function translateStopReason(
+  t: TFunction,
+  stopReason: string | null | undefined,
+  value: number | null | undefined,
+): string {
   if (!stopReason) return "";
-  const staticText = STOP_REASON_TEXTS[stopReason];
-  if (staticText) return staticText;
-
-  const clickLimit = stopReason.match(/^Click limit reached \((.+)\)$/);
-  if (clickLimit) {
-    return `Click limit reached (${clickLimit[1]})`;
-  }
-
-  const timeLimit = stopReason.match(/^Time limit reached \((.+)\)$/);
-  if (timeLimit) {
-    return `Time limit reached (${timeLimit[1]})`;
-  }
-
-  return stopReason;
+  return t(`stopReason:${stopReason}`, { value: value ?? undefined });
 }
 
 const SimpleIcon = memo(function SimpleIcon({ active }: TabIconProps) {
@@ -155,7 +130,6 @@ const ZonesIcon = memo(function ZonesIcon({ active }: TabIconProps) {
 const TAB_ITEMS: readonly TabItem[] = [
   {
     value: "simple",
-    label: "Simple",
     color: "var(--accent-green)",
     activeBg: "rgba(25, 194, 51, 0.1)",
     activeFocusRing: "rgba(25, 194, 51, 0.25)",
@@ -163,7 +137,6 @@ const TAB_ITEMS: readonly TabItem[] = [
   },
   {
     value: "advanced",
-    label: "Advanced",
     color: "var(--accent-yellow)",
     activeBg: "rgba(254, 188, 47, 0.1)",
     activeFocusRing: "rgba(254, 188, 47, 0.25)",
@@ -171,7 +144,6 @@ const TAB_ITEMS: readonly TabItem[] = [
   },
   {
     value: "zones",
-    label: "Zones",
     color: "hsl(208 85% 58%)",
     activeBg: "hsla(208, 85%, 58%, 0.14)",
     activeFocusRing: "hsla(208, 85%, 58%, 0.35)",
@@ -185,12 +157,14 @@ const TitleBar = memo(function TitleBar({
   running,
   paused,
   stopReason,
+  stopReasonValue,
   stopKey,
   isAlwaysOnTop,
   onToggleAlwaysOnTop,
   onRequestClose,
   warning,
 }: Props) {
+  const { t } = useTranslation();
   const setTabRef = useRef(setTab);
   useEffect(() => {
     setTabRef.current = setTab;
@@ -221,8 +195,8 @@ const TitleBar = memo(function TitleBar({
           className="settings-button"
           data-active={tab === "settings"}
           onClick={handleSettingsClick}
-          title="Settings"
-          aria-label="Settings"
+          title={t("common:window.settings")}
+          aria-label={t("common:window.settings")}
           style={{ WebkitAppRegion: "no-drag" } as CSSProperties}
         >
           <svg
@@ -246,7 +220,7 @@ const TitleBar = memo(function TitleBar({
             return (
               <TabIconButton
                 key={item.value}
-                label={item.label}
+                label={t(`common:tab.${item.value}`)}
                 active={isActive}
                 onClick={handleTabClick}
                 value={item.value}
@@ -265,6 +239,7 @@ const TitleBar = memo(function TitleBar({
           running={running}
           paused={paused}
           stopReason={stopReason}
+          stopReasonValue={stopReasonValue}
           stopKey={stopKey}
           warning={warning}
         />
@@ -286,7 +261,9 @@ const TitleBar = memo(function TitleBar({
           }}
           active={isAlwaysOnTop}
           title={
-            isAlwaysOnTop ? "Disable Always on Top" : "Enable Always on Top"
+            isAlwaysOnTop
+              ? t("common:window.alwaysOnTopDisable")
+              : t("common:window.alwaysOnTopEnable")
           }
           label={
             <svg
@@ -309,7 +286,7 @@ const TitleBar = memo(function TitleBar({
           onClick={() => {
             void handleMinimize();
           }}
-          title="Minimize"
+          title={t("common:window.minimize")}
           label={
             <svg width="10" height="2" viewBox="0 0 10 2" fill="none">
               <rect width="10" height="2" fill="currentColor" />
@@ -321,7 +298,7 @@ const TitleBar = memo(function TitleBar({
             void onRequestClose();
           }}
           danger
-          title="Close"
+          title={t("common:window.close")}
           label={
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path
@@ -341,9 +318,19 @@ function AnimatedTitle({
   running,
   paused,
   stopReason,
+  stopReasonValue,
   stopKey,
   warning,
-}: Pick<Props, "running" | "paused" | "stopReason" | "stopKey" | "warning">) {
+}: Pick<
+  Props,
+  | "running"
+  | "paused"
+  | "stopReason"
+  | "stopReasonValue"
+  | "stopKey"
+  | "warning"
+>) {
+  const { t } = useTranslation();
   const [titleState, setTitleState] = useState(DEFAULT_TITLE_STATE);
   const frameIdsRef = useRef<number[]>([]);
   const timeoutIdsRef = useRef<number[]>([]);
@@ -373,7 +360,9 @@ function AnimatedTitle({
       lastShownStopReasonRef.current = null;
       queueFrame(() => {
         setTitleState({
-          text: `⚠ ${warning}`,
+          text: t("common:title.warningPrefix", {
+            warning: t(`stopReason:${warning}`),
+          }),
           isReason: true,
           flipClass: "",
         });
@@ -394,8 +383,10 @@ function AnimatedTitle({
       queueFrame(() => {
         setTitleState({
           text: stopReason
-            ? `Paused: ${translateStopReason(stopReason)}`
-            : "Paused",
+            ? t("common:title.pausedWithReason", {
+                reason: translateStopReason(t, stopReason, stopReasonValue),
+              })
+            : t("common:title.paused"),
           isReason: true,
           flipClass: "",
         });
@@ -419,7 +410,7 @@ function AnimatedTitle({
 
     queueFrame(() => {
       setTitleState({
-        text: translateStopReason(stopReason),
+        text: translateStopReason(t, stopReason, stopReasonValue),
         isReason: true,
         flipClass: "squish-in",
       });
@@ -437,7 +428,7 @@ function AnimatedTitle({
     }, 5000);
 
     return clearScheduledWork;
-  }, [running, stopKey, warning, paused, stopReason]);
+  }, [running, stopKey, warning, paused, stopReason, stopReasonValue, t]);
 
   return (
     <span

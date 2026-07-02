@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
+    "dev:nocrash": "tauri dev -- --no-default-features",
     "vite": "vite",
     "build": "tauri build",
     "frontend:build": "tsc -b && vite build",
@@ -27,8 +28,10 @@
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-store": "^2.4.2",
     "@tauri-apps/plugin-updater": "^2.10.1",
+    "i18next": "^26.3.4",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-i18next": "^17.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

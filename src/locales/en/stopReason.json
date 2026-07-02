@@ -1,0 +1,21 @@
+{
+  "stopped": "Stopped",
+  "stopped_from_hotkey": "Stopped from hotkey",
+  "stopped_from_hold_hotkey": "Stopped from hold hotkey",
+  "stopped_from_toggle": "Stopped from toggle",
+  "stopped_for_hotkey_input": "Stopped for hotkey input",
+  "blocked_by_alt_tab": "Blocked by Alt+Tab",
+  "blocked_by_process_list": "Blocked by process list",
+  "click_limit_reached": "Click limit reached ({{value}})",
+  "time_limit_reached": "Time limit reached ({{value}}s)",
+  "top_left_corner_failsafe": "Top-left corner failsafe",
+  "top_right_corner_failsafe": "Top-right corner failsafe",
+  "bottom_left_corner_failsafe": "Bottom-left corner failsafe",
+  "bottom_right_corner_failsafe": "Bottom-right corner failsafe",
+  "top_edge_failsafe": "Top edge failsafe",
+  "right_edge_failsafe": "Right edge failsafe",
+  "bottom_edge_failsafe": "Bottom edge failsafe",
+  "left_edge_failsafe": "Left edge failsafe",
+  "custom_stop_zone_failsafe": "Custom stop zone failsafe",
+  "warning_whitelist_empty": "Whitelist mode has no entries selected"
+}

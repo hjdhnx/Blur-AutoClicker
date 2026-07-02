@@ -1,0 +1,45 @@
+{
+  "cadence": {
+    "heading": "Cadence",
+    "tooltip": "Controls how quickly clicks are generated. In Rate mode, set clicks per second/minute/hour/day. In Delay mode, set the exact time between clicks.",
+    "hotkeyTooltip": "Choose the key combo that starts and stops the clicker. Works even when the app is minimized.",
+    "inputTooltip": "Select which mouse button gets clicked.",
+    "keyTooltip": "Select which keyboard key gets pressed."
+  },
+  "doubleClick": {
+    "heading": "Double Click",
+    "tooltip": "Clicks twice per cycle to simulate a double click.",
+    "unavailable": "Double Click is unavailable at {{cps}} clicks/sec. Lower the effective click rate below 50 clicks/sec to turn it on."
+  },
+  "dutyCycle": {
+    "heading": "Click Duration",
+    "tooltip": "Choose how long the mouse button gets held down each click, as a percentage of the click interval.",
+    "label": "Click Duration"
+  },
+  "speedVariation": {
+    "heading": "Speed Variation",
+    "tooltip": "Randomizes click speed by given percentage.",
+    "label": "Speed Variation",
+    "disabledReason": "Enable Speed Variation to edit how much the app randomizes your click timing."
+  },
+  "limits": {
+    "heading": "Limits",
+    "clickTooltip": "Stops automatically after the selected number of clicks.",
+    "timeTooltip": "Stops automatically after the selected duration.",
+    "clickMode": "Click",
+    "timeMode": "Time",
+    "clickDisabledReason": "Enable Click Limit to stop automatically after a set number of clicks.",
+    "timeDisabledReason": "Enable Time Limit to stop automatically after a set amount of time."
+  },
+  "sequence": {
+    "heading": "Sequence Clicking",
+    "tooltip": "Cycles through saved cursor positions, clicking at each one in order.",
+    "startPicking": "Start Picking",
+    "cancelPicking": "Cancel Picking",
+    "empty": "No sequence points saved yet.",
+    "axisX": "X",
+    "axisY": "Y",
+    "dragHandle": "Up / Down",
+    "delete": "Delete"
+  }
+}

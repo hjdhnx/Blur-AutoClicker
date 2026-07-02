@@ -1,0 +1,13 @@
+{
+  "pick": {
+    "addPoint": "右键添加点位。",
+    "addMultiple": "Shift + 右键 添加多个。",
+    "deletePoint": "Ctrl + 右键 删除点位。",
+    "cancel": "Esc 取消。"
+  },
+  "stopZone": {
+    "draw": "右键拖动绘制停止区域。",
+    "release": "松开保存。",
+    "cancel": "Esc 取消。"
+  }
+}

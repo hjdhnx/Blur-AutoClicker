@@ -105,6 +105,13 @@ pub fn parse_hotkey_binding(hotkey: &str) -> AppResult<HotkeyBinding> {
     let (main_vk, key_token) = main_key
         .ok_or_else(|| AppError::Hotkey(format!("Invalid hotkey '{hotkey}': missing main key")))?;
 
+    let is_bare = !(ctrl || alt || shift || super_key);
+    if is_bare && matches!(key_token.as_str(), "mouseleft" | "mouseright") {
+        return Err(AppError::Hotkey(format!(
+            "Bare {key_token} as a hotkey would hijack the mouse; add a modifier (e.g. Ctrl) or use the middle/side button"
+        )));
+    }
+
     Ok(HotkeyBinding {
         ctrl,
         alt,
@@ -448,7 +455,12 @@ pub fn handle_hotkey_released(app: &AppHandle) {
     };
 
     if mode == "Hold" {
-        if let Err(e) = stop_clicker_inner(app, Some(String::from("Stopped from hold hotkey"))) {
+        if let Err(e) = stop_clicker_inner(
+            app,
+            Some(String::from(
+                crate::engine::stop_reason::STOPPED_FROM_HOLD_HOTKEY,
+            )),
+        ) {
             log::error!("[Hotkey] Stop failed: {e}");
         }
     }
@@ -699,6 +711,27 @@ mod tests {
     fn empty_hotkeys_are_rejected() {
         assert!(parse_hotkey_binding("").is_err());
         assert!(parse_hotkey_binding("ctrl+").is_err());
+    }
+
+    #[test]
+    fn bare_mouse_left_and_right_are_rejected() {
+        // A bare left/right click hotkey would fire on every normal click and
+        // hijack the mouse, so the parser must reject them.
+        assert!(parse_hotkey_binding("mouseleft").is_err());
+        assert!(parse_hotkey_binding("mouseright").is_err());
+        assert!(parse_hotkey_binding("lmb").is_err());
+        assert!(parse_hotkey_binding("rmb").is_err());
+    }
+
+    #[test]
+    fn mouse_with_modifier_or_other_buttons_is_allowed() {
+        // Modifier combos (Ctrl+Left, etc.) and middle/side buttons stay usable.
+        assert!(parse_hotkey_binding("ctrl+mouseleft").is_ok());
+        assert!(parse_hotkey_binding("alt+mouseright").is_ok());
+        assert!(parse_hotkey_binding("shift+mouseleft").is_ok());
+        assert!(parse_hotkey_binding("mousemiddle").is_ok());
+        assert!(parse_hotkey_binding("mouse4").is_ok());
+        assert!(parse_hotkey_binding("mouse5").is_ok());
     }
 
     #[test]

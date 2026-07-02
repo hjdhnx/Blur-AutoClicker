@@ -23,6 +23,7 @@ use super::mouse::{
 };
 use super::process;
 use super::rng::SmallRng;
+use super::stop_reason;
 use super::ClickerConfig;
 use super::NtSetTimerResolution;
 use super::RunOutcome;
@@ -174,6 +175,10 @@ pub fn start_clicker_inner(app: &AppHandle) -> AppResult<ClickerStatusPayload> {
     {
         *state.last_error.lock().unwrap_or_else(poisoned_inner) = None;
         *state.stop_reason.lock().unwrap_or_else(poisoned_inner) = None;
+        *state
+            .stop_reason_value
+            .lock()
+            .unwrap_or_else(poisoned_inner) = None;
     }
 
     if config.process_list_enabled
@@ -181,7 +186,7 @@ pub fn start_clicker_inner(app: &AppHandle) -> AppResult<ClickerStatusPayload> {
         && config.process_list_entries.is_empty()
     {
         *state.warning.lock().unwrap_or_else(poisoned_inner) =
-            Some(String::from("Whitelist mode has no entries selected"));
+            Some(String::from(stop_reason::WARNING_WHITELIST_EMPTY));
     } else {
         *state.warning.lock().unwrap_or_else(poisoned_inner) = None;
     }
@@ -213,6 +218,10 @@ pub fn start_clicker_inner(app: &AppHandle) -> AppResult<ClickerStatusPayload> {
 
         *state.stop_reason.lock().unwrap_or_else(poisoned_inner) =
             Some(outcome.stop_reason.clone());
+        *state
+            .stop_reason_value
+            .lock()
+            .unwrap_or_else(poisoned_inner) = outcome.stop_reason_value;
         *state.last_error.lock().unwrap_or_else(poisoned_inner) = None;
         emit_status(&app_handle);
     });
@@ -235,6 +244,10 @@ pub fn stop_clicker_inner(
     if let Some(reason) = stop_reason {
         if was_running {
             *state.stop_reason.lock().unwrap_or_else(poisoned_inner) = Some(reason);
+            *state
+                .stop_reason_value
+                .lock()
+                .unwrap_or_else(poisoned_inner) = None;
         }
     }
     *state.warning.lock().unwrap_or_else(poisoned_inner) = None;
@@ -403,6 +416,10 @@ pub fn current_status(app: &AppHandle) -> ClickerStatusPayload {
         .lock()
         .unwrap_or_else(poisoned_inner)
         .clone();
+    let stop_reason_value = *state
+        .stop_reason_value
+        .lock()
+        .unwrap_or_else(poisoned_inner);
     let warning = state.warning.lock().unwrap_or_else(poisoned_inner).clone();
     let active_sequence_index = state.active_sequence_index.load(Ordering::SeqCst);
     let active_sequence_tick = state.active_sequence_tick.load(Ordering::SeqCst);
@@ -413,6 +430,7 @@ pub fn current_status(app: &AppHandle) -> ClickerStatusPayload {
         click_count: get_click_count(),
         last_error,
         stop_reason,
+        stop_reason_value,
         warning,
         active_sequence_index: if active_sequence_index >= 0 {
             Some(active_sequence_index as usize)
@@ -430,7 +448,7 @@ pub fn emit_status(app: &AppHandle) {
 pub fn toggle_clicker_inner(app: &AppHandle) -> AppResult<ClickerStatusPayload> {
     let state = app.state::<ClickerState>();
     if state.running.load(Ordering::SeqCst) {
-        stop_clicker_inner(app, Some(String::from("Stopped from hotkey")))
+        stop_clicker_inner(app, Some(String::from(stop_reason::STOPPED_FROM_HOTKEY)))
     } else {
         start_clicker_inner(app)
     }
@@ -543,6 +561,7 @@ impl ClickerContext {
 struct LoopState {
     click_count: i64,
     stop_reason: String,
+    stop_reason_value: Option<f64>,
     sequence_index: usize,
     sequence_clicks_remaining: usize,
     target_x: i32,
@@ -561,7 +580,8 @@ impl LoopState {
         };
         Self {
             click_count: 0,
-            stop_reason: String::from("Stopped"),
+            stop_reason: String::from(stop_reason::STOPPED),
+            stop_reason_value: None,
             sequence_index: 0,
             sequence_clicks_remaining: target.clicks.max(1),
             target_x,
@@ -572,25 +592,31 @@ impl LoopState {
     }
 }
 
-fn check_abort(config: &ClickerConfig, start_time: Instant) -> Option<String> {
+fn check_abort(config: &ClickerConfig, start_time: Instant) -> Option<(String, Option<f64>)> {
     if let Some(reason) = should_stop_for_failsafe(config) {
-        return Some(reason);
+        return Some((reason, None));
     }
     if config.task_switcher_stop_enabled && process::is_task_switcher_active() {
-        return Some(String::from("Blocked by Alt+Tab"));
+        return Some((String::from(stop_reason::BLOCKED_BY_ALT_TAB), None));
     }
     if config.process_list_enabled
         && process::check_process_list(config) == Some(super::ProcessListBehavior::Stop)
     {
-        return Some(String::from("Blocked by process list"));
+        return Some((String::from(stop_reason::BLOCKED_BY_PROCESS_LIST), None));
     }
     if config.time_limit > 0.0 && start_time.elapsed().as_secs_f64() >= config.time_limit {
-        return Some(format!("Time limit reached ({:.1}s)", config.time_limit));
+        return Some((
+            String::from(stop_reason::TIME_LIMIT_REACHED),
+            Some(config.time_limit),
+        ));
     }
     None
 }
 
-fn handle_process_list_pause(config: &ClickerConfig, control: &RunControl) -> Option<String> {
+fn handle_process_list_pause(
+    config: &ClickerConfig,
+    control: &RunControl,
+) -> Option<(String, Option<f64>)> {
     if !config.process_list_enabled {
         return None;
     }
@@ -609,7 +635,7 @@ fn handle_process_list_pause(config: &ClickerConfig, control: &RunControl) -> Op
             if control.is_active() {
                 emit_status(&control.app);
             }
-            return Some(String::from("Stopped"));
+            return Some((String::from(stop_reason::STOPPED), None));
         }
         if process::check_process_list(config).is_none() {
             break;
@@ -617,7 +643,7 @@ fn handle_process_list_pause(config: &ClickerConfig, control: &RunControl) -> Op
     }
     state.paused.store(false, Ordering::SeqCst);
     emit_status(&control.app);
-    Some(String::from("Blocked by process list"))
+    Some((String::from(stop_reason::BLOCKED_BY_PROCESS_LIST), None))
 }
 
 fn update_target(
@@ -807,16 +833,19 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
     let should_abort = || check_abort(&config, start_time).is_some();
 
     while control.is_active() {
-        if let Some(reason) = check_abort(&config, start_time) {
+        if let Some((reason, value)) = check_abort(&config, start_time) {
             st.stop_reason = reason;
+            st.stop_reason_value = value;
             break;
         }
-        if let Some(reason) = handle_process_list_pause(&config, &control) {
+        if let Some((reason, value)) = handle_process_list_pause(&config, &control) {
             st.stop_reason = reason;
+            st.stop_reason_value = value;
             break;
         }
         if config.limit > 0 && st.click_count >= config.limit as i64 {
-            st.stop_reason = format!("Click limit reached ({})", config.limit);
+            st.stop_reason = String::from(stop_reason::CLICK_LIMIT_REACHED);
+            st.stop_reason_value = Some(config.limit as f64);
             break;
         }
 
@@ -824,7 +853,8 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
 
         if !run_batch(&config, &ctx, &mut rng, &mut st, &control, &should_abort) {
             if control.is_active() {
-                st.stop_reason = format!("Click limit reached ({})", config.limit);
+                st.stop_reason = String::from(stop_reason::CLICK_LIMIT_REACHED);
+                st.stop_reason_value = Some(config.limit as f64);
             }
             break;
         }
@@ -835,6 +865,7 @@ pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
 
     RunOutcome {
         stop_reason: st.stop_reason,
+        stop_reason_value: st.stop_reason_value,
         click_count: st.click_count,
         elapsed_secs: elapsed,
         avg_cpu,

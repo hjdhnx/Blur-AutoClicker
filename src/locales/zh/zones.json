@@ -1,0 +1,32 @@
+{
+  "customStopZone": {
+    "heading": "自定义停止区域",
+    "tooltip": "在屏幕上绘制一个区域，光标进入时停止点击。",
+    "draw": "绘制区域",
+    "cancel": "取消",
+    "axisX": "X",
+    "axisY": "Y",
+    "axisW": "宽",
+    "axisH": "高"
+  },
+  "cornerStop": {
+    "heading": "角落停止",
+    "tooltip": "光标进入屏幕角落时停止点击。",
+    "disabledReason": "启用角落停止以编辑角落安全触发范围。"
+  },
+  "edgeStop": {
+    "heading": "边缘停止",
+    "tooltip": "光标到达屏幕边缘时停止点击。",
+    "disabledReason": "启用边缘停止以编辑边缘安全触发范围。"
+  },
+  "processList": {
+    "heading": "进程列表",
+    "tooltip": "当某些应用处于焦点时暂停或停止点击。",
+    "searchPlaceholder": "在 {{count}} 个应用中搜索",
+    "emptyWarning": "白名单模式已启用但未选择任何应用。点击将被全程阻止。",
+    "refreshing": "刷新中...",
+    "noProcesses": "未找到进程。请点击刷新。",
+    "noMatch": "没有名为\"{{query}}\"的进程",
+    "disabledReason": "启用进程列表以管理应用规则。"
+  }
+}

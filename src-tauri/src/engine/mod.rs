@@ -5,6 +5,7 @@ pub mod mouse;
 pub mod process;
 pub mod rng;
 pub mod stats;
+pub mod stop_reason;
 pub mod worker;
 use std::sync::atomic::AtomicI64;
 pub use worker::start_clicker;
@@ -79,6 +80,7 @@ pub struct ClickerConfig {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RunOutcome {
     pub stop_reason: String,
+    pub stop_reason_value: Option<f64>,
     pub click_count: i64,
     pub elapsed_secs: f64,
     pub avg_cpu: f64,

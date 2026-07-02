@@ -1,0 +1,13 @@
+{
+  "pick": {
+    "addPoint": "Right click to add point.",
+    "addMultiple": "Shift + right click to add multiple.",
+    "deletePoint": "Ctrl + right click to delete a point.",
+    "cancel": "Esc to cancel."
+  },
+  "stopZone": {
+    "draw": "Right click and drag to draw stop zone.",
+    "release": "Release to save.",
+    "cancel": "Esc to cancel."
+  }
+}

@@ -53,14 +53,24 @@ pub fn start_clicker(app: AppHandle) -> AppResult<ClickerStatusPayload> {
 
 #[tauri::command]
 pub fn stop_clicker(app: AppHandle) -> AppResult<ClickerStatusPayload> {
-    stop_clicker_inner(&app, Some(String::from("Stopped for hotkey input")))
+    stop_clicker_inner(
+        &app,
+        Some(String::from(
+            crate::engine::stop_reason::STOPPED_FOR_HOTKEY_INPUT,
+        )),
+    )
 }
 
 #[tauri::command]
 pub fn toggle_clicker(app: AppHandle) -> AppResult<ClickerStatusPayload> {
     let state = app.state::<ClickerState>();
     if state.running.load(Ordering::SeqCst) {
-        stop_clicker_inner(&app, Some(String::from("Stopped from toggle")))
+        stop_clicker_inner(
+            &app,
+            Some(String::from(
+                crate::engine::stop_reason::STOPPED_FROM_TOGGLE,
+            )),
+        )
     } else {
         start_clicker_inner(&app)
     }
@@ -364,4 +374,14 @@ pub fn debug_trigger_crash() -> AppResult<()> {
             "Crash trigger is only available in debug builds".into(),
         ))
     }
+}
+
+#[tauri::command]
+pub fn set_ui_language(app: AppHandle, lang: String) -> AppResult<()> {
+    {
+        let state = app.state::<ClickerState>();
+        *state.language.lock().unwrap_or_else(poisoned_inner) = lang.clone();
+    }
+    crate::rebuild_tray_menu(&app, &lang)?;
+    Ok(())
 }

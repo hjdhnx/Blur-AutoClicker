@@ -5,6 +5,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import { useTranslation } from "react-i18next";
 import {
   captureHotkey,
   captureModifierHotkey,
@@ -12,6 +13,7 @@ import {
   getKeyboardLayoutMap,
   getStateClass,
 } from "../hotkeys";
+import { buildHotkeyLabels } from "../i18n/hotkeyLabels";
 import { isAlphabeticKeyboardKey } from "../keyboardKeyCase";
 import type { KeyboardKeyCase, MouseButton } from "../store";
 
@@ -48,6 +50,8 @@ export default function KeyCaptureInput({
   onMouseButtonCapture,
   conflicts,
 }: Props) {
+  const { t } = useTranslation("hotkeys");
+  const labels = useMemo(() => buildHotkeyLabels(t), [t]);
   const [listening, setListening] = useState(false);
   const inputRef = useRef<HTMLButtonElement | null>(null);
   const [layoutMap, setLayoutMap] =
@@ -71,14 +75,14 @@ export default function KeyCaptureInput({
   }, []);
 
   const displayText = useMemo(() => {
-    if (listening) return "Press a key\u2026";
-    if (!value) return "Select key";
+    if (listening) return t("capture.pressAKey");
+    if (!value) return t("capture.selectKey");
     return applyKeyboardKeyCase(
       value,
-      formatHotkeyForDisplay(value, layoutMap),
+      formatHotkeyForDisplay(value, layoutMap, labels),
       keyboardKeyCase,
     );
-  }, [keyboardKeyCase, layoutMap, listening, value]);
+  }, [keyboardKeyCase, layoutMap, listening, value, t, labels]);
 
   useEffect(() => {
     if (!listening) return;
@@ -175,7 +179,9 @@ export default function KeyCaptureInput({
           }
         }}
         title={
-          hasConflict ? `Already bound to: ${conflicts!.join(", ")}` : undefined
+          hasConflict
+            ? t("capture.alreadyBound", { conflicts: conflicts!.join(", ") })
+            : undefined
         }
       >
         {displayText}
@@ -188,7 +194,7 @@ export default function KeyCaptureInput({
             e.stopPropagation();
             onChange("");
           }}
-          title="Clear key"
+          title={t("capture.clearKey")}
         >
           ×
         </button>

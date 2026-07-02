@@ -1,0 +1,151 @@
+{
+  "about": {
+    "heading": "关于",
+    "description": "版本与项目链接。",
+    "supportMe": "支持作者",
+    "version": "版本",
+    "ko-fi": "Ko-fi",
+    "youtube": "YouTube",
+    "twitch": "Twitch",
+    "github": "GitHub",
+    "buyMeCoffeeAlt": "在 ko-fi.com 上支持我"
+  },
+  "usage": {
+    "heading": "使用情况",
+    "description": "所有会话的点击统计。",
+    "privacyNote": "统计数据仅本地存储，不会上传到任何地方。",
+    "totalClicks": "总点击次数",
+    "totalTime": "总点击时长",
+    "averageCpu": "平均 CPU",
+    "sessions": "会话数",
+    "clearStats": "清除统计",
+    "clearStatsDesc": "清除所有使用数据。",
+    "empty": "暂无会话数据。",
+    "clearDialog": {
+      "title": "清除使用数据",
+      "message": "这将清除所有使用数据。此操作无法撤销。",
+      "confirm": "清除"
+    },
+    "timeFormat": {
+      "seconds": "{{n}}秒",
+      "minutes": "{{m}}分{{s}}秒",
+      "hours": "{{h}}小时{{m}}分"
+    }
+  },
+  "presets": {
+    "heading": "预设",
+    "description": "保存和恢复以快速切换配置。",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认？",
+    "apply": "应用",
+    "update": "更新",
+    "rename": "重命名",
+    "delete": "删除",
+    "clear": "清空",
+    "namePlaceholder": "预设名称",
+    "active": "已激活",
+    "maxAllowed": "最多允许 6 个预设",
+    "disabledWhileClicking": "点击进行中已禁用",
+    "empty": "暂无已保存的预设。"
+  },
+  "behavior": {
+    "heading": "行为",
+    "description": "更改自动点击器的运行方式。",
+    "alwaysOnTop": "窗口置顶",
+    "alwaysOnTopDesc": "使窗口保持在其他窗口之上。",
+    "stopOverlay": "停止区域叠加显示",
+    "stopOverlayDesc": "显示停止区域的边界。",
+    "stopReason": "停止原因提示",
+    "stopReasonDesc": "自动点击器停止时显示通知。",
+    "strictHotkey": "严格热键修饰符",
+    "strictHotkeyDesc": "热键需要精确的修饰键组合。",
+    "stopOnAltTab": "Alt+Tab 时停止",
+    "stopOnAltTabDesc": "切换到其他窗口时停止点击。",
+    "extendedSpeed": "扩展点击速度上限",
+    "extendedSpeedDesc": "允许点击速度最高 1000 CPS（可能影响性能）。",
+    "extendedSpeedDialog": {
+      "title": "启用扩展点击速度上限？",
+      "message": "这将允许点击速度超过默认上限，可能影响性能。",
+      "confirm": "启用"
+    }
+  },
+  "startup": {
+    "heading": "启动",
+    "description": "应用打开时的行为。",
+    "minimizeToTray": "最小化到托盘",
+    "minimizeToTrayDesc": "最小化到系统托盘而非任务栏。",
+    "runOnStartup": "开机自启",
+    "runOnStartupDesc": "应用打开时即开始点击。"
+  },
+  "appearance": {
+    "heading": "外观",
+    "description": "自定义应用外观。",
+    "theme": "主题",
+    "themeDesc": "在深色和浅色模式之间选择。",
+    "language": "语言",
+    "languageDesc": "选择界面语言。",
+    "advancedLayout": "高级布局",
+    "advancedLayoutDesc": "序列区域的面板布局。",
+    "accentColor": "强调色",
+    "accentColorDesc": "主要强调色。",
+    "resetAccent": "重置",
+    "browse": "浏览",
+    "remove": "移除",
+    "backgroundImage": "背景图片",
+    "backgroundImageDesc": "背景图片的路径或 URL。",
+    "backgroundOpacity": "背景不透明度",
+    "backgroundOpacityDesc": "背景图片的透明度。",
+    "panelOpacity": "面板不透明度",
+    "panelOpacityDesc": "设置面板的透明度。",
+    "panelBlur": "面板模糊",
+    "panelBlurDesc": "面板背后的模糊效果。"
+  },
+  "reset": {
+    "heading": "重置",
+    "description": "重置所有设置或使用数据。",
+    "resetAll": "全部重置",
+    "resetAllDesc": "将所有设置恢复为默认值。",
+    "dialog": {
+      "title": "重置所有设置",
+      "message": "这将把所有设置恢复为默认值。此操作无法撤销。",
+      "confirm": "重置"
+    }
+  },
+  "diagnostics": {
+    "heading": "诊断",
+    "description": "你的日志和崩溃报告",
+    "subdescription": "查看或导出你的诊断信息。",
+    "openFolder": "打开文件夹",
+    "export": "导出",
+    "exportSuccess": "已导出到 {{path}}",
+    "exportFailed": "导出失败",
+    "exporting": "导出中..."
+  },
+  "update": {
+    "checkForUpdate": "检查更新",
+    "checking": "检查中...",
+    "updateFound": "发现更新！",
+    "noUpdate": "已是最新版本",
+    "checkFailed": "检查失败",
+    "restartToApply": "重启以应用更新",
+    "installing": "安装中...",
+    "downloadAndInstall": "下载并安装",
+    "preparing": "准备更新...",
+    "downloading": "正在下载更新...",
+    "installingUpdate": "正在安装更新...",
+    "installed": "更新已安装。请重启以应用。",
+    "installFailed": "更新安装失败。",
+    "restartFailed": "重启失败。请手动重新打开应用。",
+    "alreadyInstalling": "更新正在安装中...",
+    "alreadyDownloading": "更新正在下载中...",
+    "alreadyPreparing": "更新正在准备中...",
+    "noLongerAvailable": "更新已不可用。",
+    "to": "至"
+  },
+  "changelog": {
+    "showChanges": "显示更新日志",
+    "hideChanges": "隐藏更新日志",
+    "showAll": "显示全部（还有 {{count}} 个版本）"
+  }
+}

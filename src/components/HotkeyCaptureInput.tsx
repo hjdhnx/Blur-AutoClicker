@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
+import { useTranslation } from "react-i18next";
 import {
   captureHotkey,
   captureModifierHotkey,
   captureMouseHotkey,
-  defaultHotkeyLabels,
   formatHotkeyForDisplay,
   getKeyboardLayoutMap,
   getStateClass,
+  hotkeyMainKey,
+  hotkeyModifiers,
+  isBareMouseMainKeyBlocked,
 } from "../hotkeys";
+import { buildHotkeyLabels } from "../i18n/hotkeyLabels";
 
 interface Props {
   value: string;
@@ -28,6 +32,8 @@ export default function HotkeyCaptureInput({
   conflicts,
   reserved,
 }: Props) {
+  const { t } = useTranslation("hotkeys");
+  const labels = useMemo(() => buildHotkeyLabels(t), [t]);
   const [listening, setListening] = useState(false);
   const inputRef = useRef<HTMLButtonElement | null>(null);
   const ignorePrimaryInputMouseUntilRef = useRef(0);
@@ -35,6 +41,8 @@ export default function HotkeyCaptureInput({
   const suppressResetTimerRef = useRef<number | null>(null);
   const [layoutMap, setLayoutMap] =
     useState<Awaited<ReturnType<typeof getKeyboardLayoutMap>>>(null);
+  const [rejectMessage, setRejectMessage] = useState<string | null>(null);
+  const rejectTimerRef = useRef<number | null>(null);
   const onChangeRef = useRef(onChange);
 
   useEffect(() => {
@@ -66,6 +74,9 @@ export default function HotkeyCaptureInput({
       active = false;
       if (suppressResetTimerRef.current !== null) {
         window.clearTimeout(suppressResetTimerRef.current);
+      }
+      if (rejectTimerRef.current !== null) {
+        window.clearTimeout(rejectTimerRef.current);
       }
       window.removeEventListener("mouseup", handleSuppressedMouseEvent, true);
       window.removeEventListener("click", handleSuppressedMouseEvent, true);
@@ -180,6 +191,27 @@ export default function HotkeyCaptureInput({
       const nextHotkey = captureMouseHotkey(event);
       if (!nextHotkey) return;
 
+      const mainKey = hotkeyMainKey(nextHotkey);
+      if (
+        mainKey &&
+        isBareMouseMainKeyBlocked(mainKey) &&
+        hotkeyModifiers(nextHotkey).length === 0
+      ) {
+        if (rejectTimerRef.current !== null) {
+          window.clearTimeout(rejectTimerRef.current);
+        }
+        setRejectMessage(t("capture.unsafeBareMouse"));
+        rejectTimerRef.current = window.setTimeout(() => {
+          setRejectMessage(null);
+          rejectTimerRef.current = null;
+        }, 3500);
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+        event.stopPropagation();
+        return;
+      }
+
       suppressedMouseButtonRef.current = event.button;
       if (suppressResetTimerRef.current !== null) {
         window.clearTimeout(suppressResetTimerRef.current);
@@ -216,12 +248,13 @@ export default function HotkeyCaptureInput({
   }, [listening]);
 
   const displayText = useMemo(() => {
-    if (listening) return "Press keys\u2026";
+    if (listening && rejectMessage) return rejectMessage;
+    if (listening) return t("capture.pressKeys");
 
     return value
-      ? formatHotkeyForDisplay(value, layoutMap, defaultHotkeyLabels)
-      : defaultHotkeyLabels.empty;
-  }, [layoutMap, listening, value]);
+      ? formatHotkeyForDisplay(value, layoutMap, labels)
+      : labels.empty;
+  }, [layoutMap, listening, rejectMessage, value, t, labels]);
 
   const hasConflict = conflicts !== undefined && conflicts.length > 0;
   const stateClass = getStateClass(listening, hasConflict, !!value);
@@ -229,11 +262,11 @@ export default function HotkeyCaptureInput({
   const tooltipText = listening
     ? undefined
     : hasConflict
-      ? `Already bound to: ${conflicts!.join(", ")}`
+      ? t("capture.alreadyBound", { conflicts: conflicts!.join(", ") })
       : reserved
-        ? "This hotkey may conflict with system shortcuts"
+        ? t("capture.systemConflict")
         : value
-          ? "Hotkey works even when Blur is minimized"
+          ? t("capture.worksWhenMinimized")
           : undefined;
 
   return (
@@ -248,6 +281,7 @@ export default function HotkeyCaptureInput({
         }}
         onClick={() => {
           ignorePrimaryInputMouseUntilRef.current = performance.now() + 150;
+          setRejectMessage(null);
           setListening(true);
           invoke("stop_clicker").catch((err) => {
             error(
@@ -275,7 +309,7 @@ export default function HotkeyCaptureInput({
             e.stopPropagation();
             onChange("");
           }}
-          title="Clear hotkey"
+          title={t("capture.clearHotkey")}
         >
           ×
         </button>

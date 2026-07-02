@@ -1,9 +1,10 @@
 use super::mouse::{current_cursor_position, current_monitor_rects, VirtualScreenRect};
+use super::stop_reason;
 use super::ClickerConfig;
 
 fn detect_custom_stop_zone(cursor: (i32, i32), config: &ClickerConfig) -> Option<String> {
     if config.custom_stop_zone_enabled && config.custom_stop_zone.contains(cursor.0, cursor.1) {
-        return Some(String::from("Custom stop zone failsafe"));
+        return Some(String::from(stop_reason::CUSTOM_STOP_ZONE_FAILSAFE));
     }
 
     None
@@ -24,16 +25,16 @@ fn detect_corner_failsafe(
     let bottom = monitor.bottom();
 
     if cursor.0 <= left + config.corner_stop_tl && cursor.1 <= top + config.corner_stop_tl {
-        return Some(String::from("Top-left corner failsafe"));
+        return Some(String::from(stop_reason::TOP_LEFT_CORNER_FAILSAFE));
     }
     if cursor.0 >= right - config.corner_stop_tr && cursor.1 <= top + config.corner_stop_tr {
-        return Some(String::from("Top-right corner failsafe"));
+        return Some(String::from(stop_reason::TOP_RIGHT_CORNER_FAILSAFE));
     }
     if cursor.0 <= left + config.corner_stop_bl && cursor.1 >= bottom - config.corner_stop_bl {
-        return Some(String::from("Bottom-left corner failsafe"));
+        return Some(String::from(stop_reason::BOTTOM_LEFT_CORNER_FAILSAFE));
     }
     if cursor.0 >= right - config.corner_stop_br && cursor.1 >= bottom - config.corner_stop_br {
-        return Some(String::from("Bottom-right corner failsafe"));
+        return Some(String::from(stop_reason::BOTTOM_RIGHT_CORNER_FAILSAFE));
     }
 
     None
@@ -54,16 +55,16 @@ fn detect_edge_failsafe(
     let bottom = monitor.bottom();
 
     if cursor.1 <= top + config.edge_stop_top {
-        return Some(String::from("Top edge failsafe"));
+        return Some(String::from(stop_reason::TOP_EDGE_FAILSAFE));
     }
     if cursor.0 >= right - config.edge_stop_right {
-        return Some(String::from("Right edge failsafe"));
+        return Some(String::from(stop_reason::RIGHT_EDGE_FAILSAFE));
     }
     if cursor.1 >= bottom - config.edge_stop_bottom {
-        return Some(String::from("Bottom edge failsafe"));
+        return Some(String::from(stop_reason::BOTTOM_EDGE_FAILSAFE));
     }
     if cursor.0 <= left + config.edge_stop_left {
-        return Some(String::from("Left edge failsafe"));
+        return Some(String::from(stop_reason::LEFT_EDGE_FAILSAFE));
     }
 
     None
@@ -153,10 +154,10 @@ mod tests {
         ];
 
         let reason = detect_failsafe((-1915, 500), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Left edge failsafe"));
+        assert_eq!(reason.as_deref(), Some(stop_reason::LEFT_EDGE_FAILSAFE));
 
         let reason = detect_failsafe((1915, 500), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Right edge failsafe"));
+        assert_eq!(reason.as_deref(), Some(stop_reason::RIGHT_EDGE_FAILSAFE));
     }
 
     #[test]
@@ -168,10 +169,10 @@ mod tests {
         ];
 
         let reason = detect_failsafe((1915, 540), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Right edge failsafe"));
+        assert_eq!(reason.as_deref(), Some(stop_reason::RIGHT_EDGE_FAILSAFE));
 
         let reason = detect_failsafe((1925, 540), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Left edge failsafe"));
+        assert_eq!(reason.as_deref(), Some(stop_reason::LEFT_EDGE_FAILSAFE));
     }
 
     #[test]
@@ -183,13 +184,22 @@ mod tests {
         ];
 
         let reason = detect_failsafe((-1275, -190), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Top-left corner failsafe"));
+        assert_eq!(
+            reason.as_deref(),
+            Some(stop_reason::TOP_LEFT_CORNER_FAILSAFE)
+        );
 
         let reason = detect_failsafe((5, 125), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Top-left corner failsafe"));
+        assert_eq!(
+            reason.as_deref(),
+            Some(stop_reason::TOP_LEFT_CORNER_FAILSAFE)
+        );
 
         let reason = detect_failsafe((1915, 1195), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Bottom-right corner failsafe"));
+        assert_eq!(
+            reason.as_deref(),
+            Some(stop_reason::BOTTOM_RIGHT_CORNER_FAILSAFE)
+        );
     }
 
     #[test]
@@ -200,7 +210,10 @@ mod tests {
         let monitors = [VirtualScreenRect::new(0, 0, 1920, 1080)];
 
         let reason = detect_failsafe((150, 120), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Custom stop zone failsafe"));
+        assert_eq!(
+            reason.as_deref(),
+            Some(stop_reason::CUSTOM_STOP_ZONE_FAILSAFE)
+        );
     }
 
     #[test]
@@ -214,6 +227,9 @@ mod tests {
         ];
 
         let reason = detect_failsafe((-250, -150), &monitors, &config);
-        assert_eq!(reason.as_deref(), Some("Custom stop zone failsafe"));
+        assert_eq!(
+            reason.as_deref(),
+            Some(stop_reason::CUSTOM_STOP_ZONE_FAILSAFE)
+        );
     }
 }

@@ -619,6 +619,15 @@ export function captureMouseHotkey(event: MouseCaptureEvent): string | null {
   return buildHotkeyString(mainKey, event);
 }
 
+const BARE_MOUSE_BLOCKED_KEYS = new Set(["mouseleft", "mouseright"]);
+
+// A bare left/right mouse button hotkey would fire on every normal click and
+// effectively hijack the mouse. Only block it when no modifier is held —
+// combinations like Ctrl+Left and the middle/side buttons stay usable.
+export function isBareMouseMainKeyBlocked(mainKey: string): boolean {
+  return BARE_MOUSE_BLOCKED_KEYS.has(mainKey.trim().toLowerCase());
+}
+
 export function formatHotkeyForDisplay(
   value: string,
   layoutMap: LayoutMapLike | null,

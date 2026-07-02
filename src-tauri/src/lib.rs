@@ -24,7 +24,9 @@ use crate::hotkeys::start_hotkey_listener;
 use std::sync::atomic::{AtomicBool, AtomicI64, AtomicU64};
 use std::sync::{Arc, Mutex};
 use tauri::menu::{Menu, MenuItem};
-use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
+use tauri::tray::{
+    MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent, TrayIconId,
+};
 use tauri::{AppHandle, Listener, Manager};
 
 const STATUS_EVENT: &str = "clicker-status";
@@ -102,12 +104,33 @@ fn setup_logging(app: &AppHandle) {
     );
 }
 
-fn setup_tray(app: &AppHandle) -> Result<(), tauri::Error> {
-    let show_item = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
-    let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&show_item, &quit_item])?;
+const TRAY_ID: &str = "main-tray";
 
-    TrayIconBuilder::new()
+fn tray_menu_texts(lang: &str) -> (&'static str, &'static str) {
+    if lang == "zh" {
+        ("显示", "退出")
+    } else {
+        ("Show", "Quit")
+    }
+}
+
+fn build_tray_menu(app: &AppHandle, lang: &str) -> Result<Menu<tauri::Wry>, tauri::Error> {
+    let (show_text, quit_text) = tray_menu_texts(lang);
+    let show_item = MenuItem::with_id(app, "show", show_text, true, None::<&str>)?;
+    let quit_item = MenuItem::with_id(app, "quit", quit_text, true, None::<&str>)?;
+    Menu::with_items(app, &[&show_item, &quit_item])
+}
+
+fn setup_tray(app: &AppHandle) -> Result<(), tauri::Error> {
+    let lang = app
+        .state::<ClickerState>()
+        .language
+        .lock()
+        .unwrap_or_else(poisoned_inner)
+        .clone();
+    let menu = build_tray_menu(app, &lang)?;
+
+    TrayIconBuilder::with_id(TrayIconId::new(TRAY_ID))
         .icon(app.default_window_icon().unwrap().clone())
         .menu(&menu)
         .tooltip("BlurAutoClicker")
@@ -147,6 +170,14 @@ fn setup_tray(app: &AppHandle) -> Result<(), tauri::Error> {
         })
         .build(app)?;
 
+    Ok(())
+}
+
+pub fn rebuild_tray_menu(app: &AppHandle, lang: &str) -> Result<(), tauri::Error> {
+    if let Some(tray) = app.tray_by_id(&TrayIconId::new(TRAY_ID)) {
+        let menu = build_tray_menu(app, lang)?;
+        tray.set_menu(Some(menu))?;
+    }
     Ok(())
 }
 
@@ -203,6 +234,7 @@ fn create_clicker_state() -> ClickerState {
         settings: Mutex::new(ClickerSettings::default()),
         last_error: Mutex::new(None),
         stop_reason: Mutex::new(None),
+        stop_reason_value: Mutex::new(None),
         active_sequence_index: AtomicI64::new(-1),
         active_sequence_tick: AtomicU64::new(0),
         registered_hotkey: Mutex::new(None),
@@ -214,6 +246,7 @@ fn create_clicker_state() -> ClickerState {
         settings_initialized: AtomicBool::new(false),
         paused: Arc::new(AtomicBool::new(false)),
         warning: Mutex::new(None),
+        language: Mutex::new(String::from("en")),
     }
 }
 
@@ -283,6 +316,7 @@ pub fn run() {
             ui_commands::get_autostart_enabled,
             ui_commands::set_autostart_enabled,
             ui_commands::list_processes,
+            ui_commands::set_ui_language,
             ui_commands::was_autostart_launch,
             ui_commands::get_diagnostics_info,
             ui_commands::open_diagnostics_folder,

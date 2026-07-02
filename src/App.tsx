@@ -105,6 +105,7 @@ const DEFAULT_STATUS: ClickerStatus = {
   clickCount: 0,
   lastError: null,
   stopReason: null,
+  stopReasonValue: null,
   warning: null,
   activeSequenceIndex: null,
   activeSequenceTick: 0,
@@ -1050,6 +1051,7 @@ export default function App() {
             ? status.stopReason
             : null
         }
+        stopReasonValue={status.stopReasonValue}
         stopKey={stopKey}
         warning={status.warning}
         isAlwaysOnTop={settings.alwaysOnTop}

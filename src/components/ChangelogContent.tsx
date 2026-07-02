@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import type { ChangelogEntry } from "../changelog";
 import "./ChangelogContent.css";
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export default function ChangelogContent({ entries }: Props) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   const handleContentClick = useCallback((event: React.MouseEvent) => {
@@ -54,7 +56,9 @@ export default function ChangelogContent({ entries }: Props) {
           className="changelog-expand-btn"
           onClick={() => setExpanded(true)}
         >
-          <span>Show all ({entries.length - 1} more versions)</span>
+          <span>
+            {t("settings:changelog.showAll", { count: entries.length - 1 })}
+          </span>
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
             <path
               d="M3 1L7 5L3 9"

@@ -1,0 +1,32 @@
+{
+  "customStopZone": {
+    "heading": "Custom Stop Zone",
+    "tooltip": "Draw a zone on screen that stops clicking when your cursor enters it.",
+    "draw": "Draw Zone",
+    "cancel": "Cancel",
+    "axisX": "X",
+    "axisY": "Y",
+    "axisW": "W",
+    "axisH": "H"
+  },
+  "cornerStop": {
+    "heading": "Corner Stop",
+    "tooltip": "Stops the clicker when the cursor enters a screen corner.",
+    "disabledReason": "Enable Corner Stop to edit the corner failsafe hitboxes."
+  },
+  "edgeStop": {
+    "heading": "Edge Stop",
+    "tooltip": "Stops the clicker when the cursor reaches a screen edge.",
+    "disabledReason": "Enable Edge Stop to edit the edge failsafe hitboxes."
+  },
+  "processList": {
+    "heading": "Process List",
+    "tooltip": "Pause or stop clicking when certain applications are focused.",
+    "searchPlaceholder": "search in {{count}} applications",
+    "emptyWarning": "Whitelist mode is active with no applications selected. Clicking will be blocked everywhere.",
+    "refreshing": "Refreshing...",
+    "noProcesses": "No processes found. Click Refresh.",
+    "noMatch": "no process named \"{{query}}\"",
+    "disabledReason": "Enable Process List to manage application rules."
+  }
+}

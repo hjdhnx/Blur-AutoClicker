@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Settings } from "../../../store";
 import { error } from "@tauri-apps/plugin-log";
 import { invoke } from "@tauri-apps/api/core";
@@ -29,6 +30,7 @@ export default function CustomStopZoneSection({
   update,
   showInfo,
 }: Props) {
+  const { t } = useTranslation();
   const [drawingZone, setDrawingZone] = useState(false);
   const updateRef = useRef(update);
 
@@ -138,9 +140,11 @@ export default function CustomStopZoneSection({
           }}
         >
           {showInfo ? (
-            <InfoIcon text="Draw a zone on screen that stops clicking when your cursor enters it." />
+            <InfoIcon text={t("zones:customStopZone.tooltip")} />
           ) : null}
-          <span className="adv-card-title">Custom Stop Zone</span>
+          <span className="adv-card-title">
+            {t("zones:customStopZone.heading")}
+          </span>
         </div>
         <ToggleBtn
           value={settings.customStopZoneEnabled}
@@ -165,7 +169,7 @@ export default function CustomStopZoneSection({
                   className="adv-unit"
                   style={{ minWidth: "0.75rem", textAlign: "center" }}
                 >
-                  X
+                  {t("zones:customStopZone.axisX")}
                 </span>
                 <NumInput
                   value={settings.customStopZoneX}
@@ -181,7 +185,7 @@ export default function CustomStopZoneSection({
                   className="adv-unit"
                   style={{ minWidth: "0.75rem", textAlign: "center" }}
                 >
-                  Y
+                  {t("zones:customStopZone.axisY")}
                 </span>
                 <NumInput
                   value={settings.customStopZoneY}
@@ -197,7 +201,7 @@ export default function CustomStopZoneSection({
                   className="adv-unit"
                   style={{ minWidth: "0.75rem", textAlign: "center" }}
                 >
-                  W
+                  {t("zones:customStopZone.axisW")}
                 </span>
                 <NumInput
                   value={settings.customStopZoneWidth}
@@ -214,7 +218,7 @@ export default function CustomStopZoneSection({
                   className="adv-unit"
                   style={{ minWidth: "0.75rem", textAlign: "center" }}
                 >
-                  H
+                  {t("zones:customStopZone.axisH")}
                 </span>
                 <NumInput
                   value={settings.customStopZoneHeight}
@@ -234,7 +238,9 @@ export default function CustomStopZoneSection({
                     : startCustomStopZonePick());
                 }}
               >
-                {drawingZone ? "Cancel" : "Draw Zone"}
+                {drawingZone
+                  ? t("zones:customStopZone.cancel")
+                  : t("zones:customStopZone.draw")}
               </button>
             </div>
           </div>

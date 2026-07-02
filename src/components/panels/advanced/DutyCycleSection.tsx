@@ -1,6 +1,7 @@
 import type { Settings } from "../../../store";
 
 import { SETTINGS_LIMITS } from "../../../settingsSchema";
+import { useTranslation } from "react-i18next";
 import { InfoIcon, NumInput } from "./shared";
 
 interface Props {
@@ -14,6 +15,7 @@ export default function DutyCycleSection({
   update,
   showInfo,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="adv-sectioncontainer adv-basic-card">
       <div className="adv-card-header">
@@ -25,9 +27,11 @@ export default function DutyCycleSection({
           }}
         >
           {showInfo ? (
-            <InfoIcon text="Choose how long the mouse button gets held during each click. 50% at 1 click per second = 0.5sec held, 0.5sec released" />
+            <InfoIcon text={t("advanced:dutyCycle.tooltip")} />
           ) : null}
-          <span className="adv-card-title">Click Duration</span>
+          <span className="adv-card-title">
+            {t("advanced:dutyCycle.heading")}
+          </span>
         </div>
         <div className="adv-row" style={{ gap: 6 }}>
           <div className="adv-minmax">
@@ -38,7 +42,7 @@ export default function DutyCycleSection({
                 min={SETTINGS_LIMITS.dutyCycle.min}
                 max={SETTINGS_LIMITS.dutyCycle.max}
               />
-              <span className="adv-unit">%</span>
+              <span className="adv-unit">{t("common:unit.percent")}</span>
             </div>
           </div>
         </div>

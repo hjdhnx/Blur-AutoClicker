@@ -10,6 +10,7 @@ pub struct ClickerState {
     pub settings: Mutex<ClickerSettings>,
     pub last_error: Mutex<Option<String>>,
     pub stop_reason: Mutex<Option<String>>,
+    pub stop_reason_value: Mutex<Option<f64>>,
     pub active_sequence_index: AtomicI64,
     pub active_sequence_tick: AtomicU64,
     pub suppress_hotkey_until_ms: AtomicU64,
@@ -21,6 +22,7 @@ pub struct ClickerState {
     pub settings_initialized: AtomicBool,
     pub paused: Arc<AtomicBool>,
     pub warning: Mutex<Option<String>>,
+    pub language: Mutex<String>,
 }
 
 #[derive(Clone, serde::Serialize)]
@@ -31,6 +33,7 @@ pub struct ClickerStatusPayload {
     pub click_count: i64,
     pub last_error: Option<String>,
     pub stop_reason: Option<String>,
+    pub stop_reason_value: Option<f64>,
     pub warning: Option<String>,
     pub active_sequence_index: Option<usize>,
     pub active_sequence_tick: u64,

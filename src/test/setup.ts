@@ -1,4 +1,6 @@
 import "@testing-library/jest-dom/vitest";
+import { beforeAll } from "vitest";
+import { initI18n } from "../i18n";
 
 vi.mock("@tauri-apps/plugin-log", () => ({
   error: vi.fn(),
@@ -8,3 +10,7 @@ vi.mock("@tauri-apps/plugin-log", () => ({
   trace: vi.fn(),
   log: vi.fn(),
 }));
+
+beforeAll(async () => {
+  await initI18n("en");
+});

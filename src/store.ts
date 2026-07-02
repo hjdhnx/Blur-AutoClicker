@@ -16,6 +16,7 @@ export type {
   ClickMode,
   InputType,
   KeyboardKeyCase,
+  Language,
   MouseButton,
   PresetDefinition,
   PresetId,
@@ -34,6 +35,7 @@ export interface ClickerStatus {
   clickCount: number;
   lastError: string | null;
   stopReason: string | null;
+  stopReasonValue: number | null;
   warning: string | null;
   activeSequenceIndex: number | null;
   activeSequenceTick: number;

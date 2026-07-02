@@ -1,0 +1,151 @@
+{
+  "about": {
+    "heading": "About",
+    "description": "Version and project links.",
+    "supportMe": "Support Me",
+    "version": "Version",
+    "ko-fi": "Ko-fi",
+    "youtube": "YouTube",
+    "twitch": "Twitch",
+    "github": "GitHub",
+    "buyMeCoffeeAlt": "Buy Me a Coffee at ko-fi.com"
+  },
+  "usage": {
+    "heading": "Usage",
+    "description": "Clicking statistics for all sessions.",
+    "privacyNote": "Statistics are stored locally and never sent anywhere.",
+    "totalClicks": "Total Clicks",
+    "totalTime": "Total Time Clicking",
+    "averageCpu": "Average CPU",
+    "sessions": "Sessions",
+    "clearStats": "Clear Stats",
+    "clearStatsDesc": "Clear all usage data.",
+    "empty": "No session data yet.",
+    "clearDialog": {
+      "title": "Clear usage data",
+      "message": "This will clear all usage data. This action cannot be undone.",
+      "confirm": "Clear"
+    },
+    "timeFormat": {
+      "seconds": "{{n}}s",
+      "minutes": "{{m}}m {{s}}s",
+      "hours": "{{h}}h {{m}}m"
+    }
+  },
+  "presets": {
+    "heading": "Presets",
+    "description": "Save and restore to quickly switch configurations.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm?",
+    "apply": "Apply",
+    "update": "Update",
+    "rename": "Rename",
+    "delete": "Delete",
+    "clear": "Clear",
+    "namePlaceholder": "Preset name",
+    "active": "Active",
+    "maxAllowed": "Max 6 presets allowed",
+    "disabledWhileClicking": "Disabled while clicking",
+    "empty": "No saved presets."
+  },
+  "behavior": {
+    "heading": "Behavior",
+    "description": "Change how the auto clicker runs.",
+    "alwaysOnTop": "Always on Top",
+    "alwaysOnTopDesc": "Keep the window above others.",
+    "stopOverlay": "Stop Hitbox Overlay",
+    "stopOverlayDesc": "Show the stop zone boundaries.",
+    "stopReason": "Stop Reason Alert",
+    "stopReasonDesc": "Show a notification when the auto clicker stops.",
+    "strictHotkey": "Strict Hotkey Modifiers",
+    "strictHotkeyDesc": "Require exact modifier keys for hotkeys.",
+    "stopOnAltTab": "Stop on Alt+Tab",
+    "stopOnAltTabDesc": "Stop clicking when switching to another window.",
+    "extendedSpeed": "Extended Click Speed Limit",
+    "extendedSpeedDesc": "Allow click speeds up to 1000 CPS (may affect performance).",
+    "extendedSpeedDialog": {
+      "title": "Enable extended click speed limit?",
+      "message": "This will allow click speeds beyond the default limit. This may affect performance.",
+      "confirm": "Enable"
+    }
+  },
+  "startup": {
+    "heading": "Startup",
+    "description": "Behavior when the app opens.",
+    "minimizeToTray": "Minimize to Tray",
+    "minimizeToTrayDesc": "Minimize to the system tray instead of the taskbar.",
+    "runOnStartup": "Run on Startup",
+    "runOnStartupDesc": "Start clicking when the app opens."
+  },
+  "appearance": {
+    "heading": "Appearance",
+    "description": "Customize how the app looks.",
+    "theme": "Theme",
+    "themeDesc": "Choose between dark and light mode.",
+    "language": "Language",
+    "languageDesc": "Choose the interface language.",
+    "advancedLayout": "Advanced Layout",
+    "advancedLayoutDesc": "Panel layout for sequence zones.",
+    "accentColor": "Accent Color",
+    "accentColorDesc": "The primary accent color.",
+    "resetAccent": "Reset",
+    "browse": "Browse",
+    "remove": "Remove",
+    "backgroundImage": "Background Image",
+    "backgroundImageDesc": "Path or URL to a background image.",
+    "backgroundOpacity": "Background Opacity",
+    "backgroundOpacityDesc": "Transparency of the background image.",
+    "panelOpacity": "Panel Opacity",
+    "panelOpacityDesc": "Transparency of the settings panel.",
+    "panelBlur": "Panel Blur",
+    "panelBlurDesc": "Blur effect behind the panel."
+  },
+  "reset": {
+    "heading": "Reset",
+    "description": "Reset all settings or usage data.",
+    "resetAll": "Reset All",
+    "resetAllDesc": "Reset all settings to their defaults.",
+    "dialog": {
+      "title": "Reset all settings",
+      "message": "This will reset all settings to their default values. This action cannot be undone.",
+      "confirm": "Reset"
+    }
+  },
+  "diagnostics": {
+    "heading": "Diagnostics",
+    "description": "Your logs & crash reports",
+    "subdescription": "View or export your diagnostics.",
+    "openFolder": "Open Folder",
+    "export": "Export",
+    "exportSuccess": "Exported to {{path}}",
+    "exportFailed": "Export failed",
+    "exporting": "Exporting..."
+  },
+  "update": {
+    "checkForUpdate": "Check for Update",
+    "checking": "Checking...",
+    "updateFound": "Update found!",
+    "noUpdate": "No update found",
+    "checkFailed": "Check failed",
+    "restartToApply": "Restart to Apply Update",
+    "installing": "Installing...",
+    "downloadAndInstall": "Download and Install",
+    "preparing": "Preparing update...",
+    "downloading": "Downloading update...",
+    "installingUpdate": "Installing update...",
+    "installed": "Update installed. Restart to apply it.",
+    "installFailed": "Update install failed.",
+    "restartFailed": "Restart failed. Please reopen the app manually.",
+    "alreadyInstalling": "The update is already installing...",
+    "alreadyDownloading": "The update is already downloading...",
+    "alreadyPreparing": "The update is already being prepared...",
+    "noLongerAvailable": "Update is no longer available.",
+    "to": "to"
+  },
+  "changelog": {
+    "showChanges": "Show Changes",
+    "hideChanges": "Hide Changes",
+    "showAll": "Show all ({{count}} more versions)"
+  }
+}

@@ -1,5 +1,6 @@
 import type { ChangeEvent, CSSProperties, FocusEvent, WheelEvent } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./panels/advanced/AdvancedPanel.css";
 import { RATE_INPUT_MODE_OPTIONS } from "../cadence";
 import { convertDurationToRate, convertRateToDuration } from "../cadence";
@@ -7,7 +8,11 @@ import { normalizeIntegerRaw } from "../numberInput";
 import type { RateInputMode, Settings } from "../store";
 
 import { AdvDropdown } from "./panels/advanced/shared";
-import { getMaxClickSpeed, type ClickInterval } from "../settingsSchema";
+import {
+  CLICK_INTERVAL_OPTIONS,
+  getMaxClickSpeed,
+  type ClickInterval,
+} from "../settingsSchema";
 
 // TODO: This should really be split up into what is in the advanced panel and what is in the simple panel. Having both in one feels kinda off i feel like.
 
@@ -17,18 +22,6 @@ interface Props {
   variant: "simple" | "advanced";
   showInfo?: boolean;
 }
-
-const INTERVAL_OPTIONS = [
-  { value: "s", label: "Second" },
-  { value: "m", label: "Minute" },
-  { value: "h", label: "Hour" },
-  { value: "d", label: "Day" },
-] as const;
-
-const SIMPLE_RATE_INPUT_MODE_OPTIONS = [
-  { value: "rate", label: "Rate" },
-  { value: "duration", label: "Delay" },
-] as const;
 
 function parseIntegerRaw(raw: string) {
   const normalized = normalizeIntegerRaw(raw);
@@ -121,7 +114,23 @@ function DurationField({
 }
 
 export default function CadenceInput({ settings, update, variant }: Props) {
+  const { t } = useTranslation();
   const maxClickSpeed = getMaxClickSpeed(settings.extendedClickSpeedLimit);
+
+  const intervalOptions = CLICK_INTERVAL_OPTIONS.map((option) => ({
+    value: option.value,
+    label: t(`common:options.interval.${option.value}`),
+  }));
+
+  const simpleRateInputModeOptions = [
+    { value: "rate", label: t("common:controls.rate") },
+    { value: "duration", label: t("common:controls.delay") },
+  ] as const;
+
+  const unitH = t("common:options.durationUnit.h");
+  const unitM = t("common:options.durationUnit.m");
+  const unitS = t("common:options.durationUnit.s");
+  const unitMs = t("common:options.durationUnit.ms");
 
   const [draftCps, setDraftCps] = useState<string | null>(null);
 
@@ -179,7 +188,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
               value={draftCps ?? settings.clickSpeed}
               min={1}
               max={maxClickSpeed}
-              aria-label="Clicks Per"
+              aria-label={t("common:cadence.clicksPer")}
               onChange={(event) => {
                 const raw = event.target.value;
                 if (raw === "") {
@@ -212,11 +221,13 @@ export default function CadenceInput({ settings, update, variant }: Props) {
               }
             />
             <div className="vertical-devider vertical-devider--stretch" />
-            <span className="simple-control-label">Clicks Per</span>
+            <span className="simple-control-label">
+              {t("common:cadence.clicksPer")}
+            </span>
             <div className="vertical-devider vertical-devider--stretch" />
             <AdvDropdown
               value={settings.clickInterval}
-              options={INTERVAL_OPTIONS}
+              options={intervalOptions}
               allowWindowOverflow
               onChange={(value) =>
                 updateSimpleCadence({ clickInterval: value as ClickInterval })
@@ -225,7 +236,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
             <div className="vertical-devider vertical-devider--stretch" />
             <AdvDropdown
               value={settings.rateInputMode}
-              options={SIMPLE_RATE_INPUT_MODE_OPTIONS}
+              options={simpleRateInputModeOptions}
               allowWindowOverflow
               onChange={(value) => switchMode(value as RateInputMode)}
             />
@@ -245,7 +256,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                   width: dynamicChWidth(settings.durationHours, 1, 3),
                   minWidth: "1ch",
                 }}
-                unit="h"
+                unit={unitH}
               />
               <DurationField
                 className="simple-duration-chip"
@@ -259,7 +270,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                   width: dynamicChWidth(settings.durationMinutes, 1, 2),
                   minWidth: "1ch",
                 }}
-                unit="m"
+                unit={unitM}
               />
               <DurationField
                 className="simple-duration-chip"
@@ -273,7 +284,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                   width: dynamicChWidth(settings.durationSeconds, 1, 2),
                   minWidth: "1ch",
                 }}
-                unit="s"
+                unit={unitS}
               />
               <DurationField
                 className="simple-duration-chip"
@@ -287,15 +298,17 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                   width: dynamicChWidth(settings.durationMilliseconds, 1, 3),
                   minWidth: "1ch",
                 }}
-                unit="ms"
+                unit={unitMs}
               />
             </div>
             <div className="vertical-devider vertical-devider--stretch" />
-            <span className="simple-control-label">Per Click</span>
+            <span className="simple-control-label">
+              {t("common:cadence.perClick")}
+            </span>
             <div className="vertical-devider vertical-devider--stretch" />
             <AdvDropdown
               value={settings.rateInputMode}
-              options={SIMPLE_RATE_INPUT_MODE_OPTIONS}
+              options={simpleRateInputModeOptions}
               allowWindowOverflow
               onChange={(value) => switchMode(value as RateInputMode)}
             />
@@ -314,7 +327,9 @@ export default function CadenceInput({ settings, update, variant }: Props) {
           className={`adv-seg-btn ${settings.rateInputMode === mode ? "active" : ""}`}
           onClick={() => switchMode(mode)}
         >
-          {mode === "rate" ? "Rate" : "Delay"}
+          {mode === "rate"
+            ? t("common:controls.rate")
+            : t("common:controls.delay")}
         </button>
       ))}
     </div>
@@ -367,12 +382,12 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                 />
               </div>
               <div className="adv-vdivider" />
-              <span className="adv-unf">Clicks Per</span>
+              <span className="adv-unf">{t("common:cadence.clicksPer")}</span>
               <div className="adv-vdivider" />
               <div className="adv-foc adv-foc-grow">
                 <AdvDropdown
                   value={settings.clickInterval}
-                  options={INTERVAL_OPTIONS}
+                  options={intervalOptions}
                   onChange={(v) =>
                     update({ clickInterval: v as ClickInterval })
                   }
@@ -409,7 +424,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                     )
                   }
                 />
-                <span className="adv-unit">h</span>
+                <span className="adv-unit">{unitH}</span>
               </div>
               <div className="adv-vdivider" />
               <div className="adv-foc">
@@ -440,7 +455,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                     )
                   }
                 />
-                <span className="adv-unit">m</span>
+                <span className="adv-unit">{unitM}</span>
               </div>
               <div className="adv-vdivider" />
               <div className="adv-foc">
@@ -471,7 +486,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                     )
                   }
                 />
-                <span className="adv-unit">s</span>
+                <span className="adv-unit">{unitS}</span>
               </div>
               <div className="adv-vdivider" />
               <div className="adv-foc">
@@ -502,7 +517,7 @@ export default function CadenceInput({ settings, update, variant }: Props) {
                     )
                   }
                 />
-                <span className="adv-unit">ms</span>
+                <span className="adv-unit">{unitMs}</span>
               </div>
             </div>
           )}

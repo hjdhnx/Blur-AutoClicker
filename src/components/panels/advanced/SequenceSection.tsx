@@ -11,6 +11,7 @@ import type { SequencePoint, Settings } from "../../../store";
 
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import { useTranslation } from "react-i18next";
 import {
   NumInput,
   Disableable,
@@ -93,6 +94,7 @@ export default function SequenceSection({
   activeSequenceIndex,
   activeSequenceTick,
 }: Props) {
+  const { t } = useTranslation();
   const [pickingSequence, setPickingSequence] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [showBottomFade, setShowBottomFade] = useState(false);
@@ -474,10 +476,10 @@ export default function SequenceSection({
             gap: "0.5rem",
           }}
         >
-          {showInfo ? (
-            <InfoIcon text="Cycles through saved cursor positions in round-robin order, applying the current global timing and click settings at each point." />
-          ) : null}
-          <span className="adv-card-title">Sequence Clicking</span>
+          {showInfo ? <InfoIcon text={t("advanced:sequence.tooltip")} /> : null}
+          <span className="adv-card-title">
+            {t("advanced:sequence.heading")}
+          </span>
         </div>
         <ToggleBtn
           value={settings.sequenceEnabled}
@@ -504,13 +506,15 @@ export default function SequenceSection({
                   : startSequencePointPick());
               }}
             >
-              {pickingSequence ? "Cancel Picking" : "Start Picking"}
+              {pickingSequence
+                ? t("advanced:sequence.cancelPicking")
+                : t("advanced:sequence.startPicking")}
             </button>
             <div className="adv-sequence-list-shell">
               <div ref={listViewportRef} className="adv-sequence-list">
                 {settings.sequencePoints.length === 0 ? (
                   <div className="adv-sequence-empty">
-                    No sequence points saved yet.
+                    {t("advanced:sequence.empty")}
                   </div>
                 ) : (
                   settings.sequencePoints.map(
@@ -558,7 +562,7 @@ export default function SequenceSection({
                             <button
                               type="button"
                               className="adv-sequence-drag-handle"
-                              aria-label="Up / Down"
+                              aria-label={t("advanced:sequence.dragHandle")}
                               onPointerDown={(event) => {
                                 event.preventDefault();
                                 const handle = event.currentTarget;
@@ -600,7 +604,7 @@ export default function SequenceSection({
                                 textAlign: "center",
                               }}
                             >
-                              X
+                              {t("advanced:sequence.axisX")}
                             </span>
                             <NumInput
                               hoverWheel={false}
@@ -626,7 +630,7 @@ export default function SequenceSection({
                                 textAlign: "left",
                               }}
                             >
-                              Y
+                              {t("advanced:sequence.axisY")}
                             </span>
                             <NumInput
                               hoverWheel={false}
@@ -649,7 +653,7 @@ export default function SequenceSection({
                               className="adv-unit"
                               style={{ minWidth: "0.75rem", textAlign: "left" }}
                             >
-                              clicks
+                              {t("common:unit.clicks")}
                             </span>
                             <NumInput
                               hoverWheel={false}
@@ -671,8 +675,8 @@ export default function SequenceSection({
                               type="button"
                               className="adv-sequence-delete"
                               onClick={() => deleteSequencePoint(index)}
-                              aria-label="Delete"
-                              title="Delete"
+                              aria-label={t("advanced:sequence.delete")}
+                              title={t("advanced:sequence.delete")}
                             >
                               <svg
                                 width="16"

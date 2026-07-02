@@ -1,0 +1,54 @@
+{
+  "app": { "name": "BlurAutoClicker" },
+  "tab": { "simple": "Simple", "advanced": "Advanced", "zones": "Zones" },
+  "window": {
+    "settings": "Settings",
+    "minimize": "Minimize",
+    "close": "Close",
+    "alwaysOnTopEnable": "Enable Always on Top",
+    "alwaysOnTopDisable": "Disable Always on Top"
+  },
+  "title": {
+    "default": "BlurAutoClicker",
+    "paused": "Paused",
+    "pausedWithReason": "Paused: {{reason}}",
+    "warningPrefix": "⚠ {{warning}}"
+  },
+  "confirm": { "confirm": "Confirm", "cancel": "Cancel", "working": "Working..." },
+  "unit": {
+    "percent": "%",
+    "px": "px",
+    "clicks": "clicks",
+    "notAvailable": "N/A"
+  },
+  "toggle": { "on": "On", "off": "Off", "disabled": "Disabled" },
+  "cadence": {
+    "clicksPer": "Clicks Per",
+    "perClick": "Per Click"
+  },
+  "controls": {
+    "keyboardCaseUpper": "Send letters as uppercase",
+    "keyboardCaseLower": "Send letters as lowercase",
+    "keyboardCaseToggle": "Toggle keyboard key case",
+    "conflictAutoPress": "Auto-press key",
+    "conflictHotkey": "Hotkey",
+    "hotkeyLabel": "Hotkey",
+    "mouseButtonLabel": "Mouse Button",
+    "keyboardKeyLabel": "Keyboard Key",
+    "rate": "Rate",
+    "delay": "Delay"
+  },
+  "options": {
+    "mode": { "toggle": "Toggle", "hold": "Hold" },
+    "mouseButton": { "left": "Left", "middle": "Middle", "right": "Right" },
+    "inputType": { "mouse": "Mouse", "keyboard": "Key" },
+    "interval": { "s": "Second", "m": "Minute", "h": "Hour", "d": "Day" },
+    "timeUnit": { "s": "s", "m": "m", "h": "h" },
+    "durationUnit": { "h": "h", "m": "m", "s": "s", "ms": "ms" },
+    "theme": { "dark": "Dark", "light": "Light" },
+    "advancedLayout": { "wide": "Wide", "tall": "Tall" },
+    "language": { "en": "English", "zh": "简体中文" },
+    "processMode": { "whitelist": "Whitelist", "blacklist": "Blacklist" },
+    "processBehavior": { "stop": "Stop", "pause": "Pause" }
+  }
+}

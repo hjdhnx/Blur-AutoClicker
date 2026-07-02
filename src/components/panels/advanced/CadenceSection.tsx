@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { MouseButton, Settings } from "../../../store";
 
 import { MOUSE_BUTTON_OPTIONS } from "../../../settingsSchema";
@@ -73,16 +74,17 @@ interface Props {
 }
 
 export default function CadenceSection({ settings, update, showInfo }: Props) {
+  const { t } = useTranslation();
   const rowSpacing = 8;
   const inputTypeOptions = [
     {
       value: "mouse",
-      label: "Mouse Button",
+      label: t("common:controls.mouseButtonLabel"),
       icon: <MouseTargetIcon />,
     },
     {
       value: "keyboard",
-      label: "Keyboard Key",
+      label: t("common:controls.keyboardKeyLabel"),
       icon: <KeyboardTargetIcon />,
     },
   ] as const;
@@ -105,8 +107,12 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
       settings.keyboardKey,
       keyboardKeyCaseIsUpper,
     );
-  const hotkeyConflicts = hasConflict ? ["Auto-press key"] : [];
-  const autoPressKeyConflicts = hasConflict ? ["Hotkey"] : [];
+  const hotkeyConflicts = hasConflict
+    ? [t("common:controls.conflictAutoPress")]
+    : [];
+  const autoPressKeyConflicts = hasConflict
+    ? [t("common:controls.conflictHotkey")]
+    : [];
 
   return (
     <div className="adv-sectioncontainer adv-basic-card">
@@ -118,10 +124,10 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
             gap: "0.5rem",
           }}
         >
-          {showInfo ? (
-            <InfoIcon text="Controls how quickly clicks are generated: either as clicks per interval (Rate) or as a fixed delay between clicks (Delay)." />
-          ) : null}
-          <span className="adv-card-title">Cadence</span>
+          {showInfo ? <InfoIcon text={t("advanced:cadence.tooltip")} /> : null}
+          <span className="adv-card-title">
+            {t("advanced:cadence.heading")}
+          </span>
         </div>
       </div>
       <CardDivider />
@@ -140,9 +146,9 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
           }}
         >
           {showInfo ? (
-            <InfoIcon text="Choose the key combo that starts and stops the clicker. Use Toggle for press-on/press-off, or Hold to click only while held." />
+            <InfoIcon text={t("advanced:cadence.hotkeyTooltip")} />
           ) : null}
-          <span className="adv-label">Hotkey</span>
+          <span className="adv-label">{t("common:controls.hotkeyLabel")}</span>
         </div>
         <div className="adv-row" style={{ marginLeft: "auto", gap: 8 }}>
           <div className="adv-textbox">
@@ -166,7 +172,7 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
                 className={`adv-seg-btn ${settings.mode === clickModeOption ? "active" : ""}`}
                 onClick={() => update({ mode: clickModeOption })}
               >
-                {clickModeOption}
+                {t(`common:options.mode.${clickModeOption.toLowerCase()}`)}
               </button>
             ))}
           </div>
@@ -184,13 +190,15 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
             <InfoIcon
               text={
                 settings.inputType === "mouse"
-                  ? "Select which mouse button the clicker will press on each click event."
-                  : "Select which keyboard key the clicker will press on each click event."
+                  ? t("advanced:cadence.inputTooltip")
+                  : t("advanced:cadence.keyTooltip")
               }
             />
           ) : null}
           <span className="adv-label">
-            {settings.inputType === "mouse" ? "Mouse Button" : "Keyboard Key"}
+            {settings.inputType === "mouse"
+              ? t("common:controls.mouseButtonLabel")
+              : t("common:controls.keyboardKeyLabel")}
           </span>
         </div>
         <div className="adv-target-controls">
@@ -225,7 +233,9 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
                     update({ mouseButton: mouseButtonOption as MouseButton })
                   }
                 >
-                  {mouseButtonOption}
+                  {t(
+                    `common:options.mouseButton.${mouseButtonOption.toLowerCase()}`,
+                  )}
                 </button>
               ))}
             </div>
@@ -255,11 +265,11 @@ export default function CadenceSection({ settings, update, showInfo }: Props) {
                 }`}
                 aria-label={
                   keyboardKeyCaseIsUpper
-                    ? "Send letters as uppercase"
-                    : "Send letters as lowercase"
+                    ? t("common:controls.keyboardCaseUpper")
+                    : t("common:controls.keyboardCaseLower")
                 }
                 aria-pressed={keyboardKeyCaseIsUpper}
-                title="Toggle keyboard key case"
+                title={t("common:controls.keyboardCaseToggle")}
                 disabled={!canToggleKeyboardKeyCase}
                 onClick={toggleKeyboardKeyCase}
               >

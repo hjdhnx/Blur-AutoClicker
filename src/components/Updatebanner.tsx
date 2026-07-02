@@ -2,6 +2,7 @@ import { relaunch } from "@tauri-apps/plugin-process";
 import { check } from "@tauri-apps/plugin-updater";
 import { error } from "@tauri-apps/plugin-log";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import UnavailableReason from "./UnavailableReason";
 import "./Updatebanner.css";
@@ -17,43 +18,44 @@ export default function UpdateBanner({
   currentVersion,
   latestVersion,
 }: UpdateBannerProps) {
+  const { t } = useTranslation();
   const [stage, setStage] = useState<UpdateStage>("ready");
   const [statusText, setStatusText] = useState<string | null>(null);
 
   const handleUpdate = async () => {
     try {
       setStage("installing");
-      setStatusText("Preparing update...");
+      setStatusText(t("settings:update.preparing"));
 
       const update = await check();
       if (!update) {
         setStage("ready");
-        setStatusText("Update is no longer available.");
+        setStatusText(t("settings:update.noLongerAvailable"));
         return;
       }
 
       await update.downloadAndInstall((event) => {
         switch (event.event) {
           case "Started":
-            setStatusText("Downloading update...");
+            setStatusText(t("settings:update.downloading"));
             break;
           case "Progress":
-            setStatusText("Installing update...");
+            setStatusText(t("settings:update.installingUpdate"));
             break;
           case "Finished":
-            setStatusText("Update installed. Restart to apply it.");
+            setStatusText(t("settings:update.installed"));
             break;
         }
       });
 
       setStage("restart-required");
-      setStatusText("Update installed. Restart to apply it.");
+      setStatusText(t("settings:update.installed"));
     } catch (err) {
       error(
         JSON.stringify({ source: "Updatebanner.install", error: String(err) }),
       );
       setStage("error");
-      setStatusText("Update install failed.");
+      setStatusText(t("settings:update.installFailed"));
     }
   };
 
@@ -65,23 +67,26 @@ export default function UpdateBanner({
         JSON.stringify({ source: "Updatebanner.relaunch", error: String(err) }),
       );
       setStage("error");
-      setStatusText("Restart failed. Please reopen the app manually.");
+      setStatusText(t("settings:update.restartFailed"));
     }
   };
 
+  const installingUpdateText = t("settings:update.installingUpdate");
+  const downloadingText = t("settings:update.downloading");
+
   const installDisabledReason =
     stage === "installing"
-      ? statusText === "Installing update..."
-        ? "The update is already installing. Wait for it to finish before trying again."
-        : statusText === "Downloading update..."
-          ? "The update is already downloading. Wait for the current install to finish."
-          : "The update is already being prepared. Wait for it to finish before trying again."
+      ? statusText === installingUpdateText
+        ? t("settings:update.alreadyInstalling")
+        : statusText === downloadingText
+          ? t("settings:update.alreadyDownloading")
+          : t("settings:update.alreadyPreparing")
       : undefined;
 
   return (
     <div className="update-banner">
       <span className="update-banner-text-old-version">v{currentVersion}</span>
-      <span className="update-banner-text">to</span>
+      <span className="update-banner-text">{t("settings:update.to")}</span>
       {/* does not need v for version, gets it from gitHub ↓  */}
       <span className="update-banner-text-new-version">{latestVersion}</span>
       {statusText && (
@@ -91,7 +96,7 @@ export default function UpdateBanner({
       )}
       {stage === "restart-required" ? (
         <button className="update-banner-btn" onClick={handleRestart}>
-          Restart to Apply Update
+          {t("settings:update.restartToApply")}
         </button>
       ) : (
         <UnavailableReason reason={installDisabledReason}>
@@ -100,7 +105,9 @@ export default function UpdateBanner({
             onClick={handleUpdate}
             disabled={stage === "installing"}
           >
-            {stage === "installing" ? "Installing..." : "Download and Install"}
+            {stage === "installing"
+              ? t("settings:update.installing")
+              : t("settings:update.downloadAndInstall")}
           </button>
         </UnavailableReason>
       )}

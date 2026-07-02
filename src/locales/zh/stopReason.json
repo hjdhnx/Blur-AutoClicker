@@ -1,0 +1,21 @@
+{
+  "stopped": "已停止",
+  "stopped_from_hotkey": "已通过热键停止",
+  "stopped_from_hold_hotkey": "已通过长按热键停止",
+  "stopped_from_toggle": "已通过切换停止",
+  "stopped_for_hotkey_input": "为录入热键而停止",
+  "blocked_by_alt_tab": "已被 Alt+Tab 中断",
+  "blocked_by_process_list": "已被进程列表阻止",
+  "click_limit_reached": "已达到点击上限 ({{value}})",
+  "time_limit_reached": "已达到时间上限 ({{value}}秒)",
+  "top_left_corner_failsafe": "左上角安全触发",
+  "top_right_corner_failsafe": "右上角安全触发",
+  "bottom_left_corner_failsafe": "左下角安全触发",
+  "bottom_right_corner_failsafe": "右下角安全触发",
+  "top_edge_failsafe": "顶边安全触发",
+  "right_edge_failsafe": "右边安全触发",
+  "bottom_edge_failsafe": "底边安全触发",
+  "left_edge_failsafe": "左边安全触发",
+  "custom_stop_zone_failsafe": "自定义停止区域安全触发",
+  "warning_whitelist_empty": "白名单模式未选择任何条目"
+}

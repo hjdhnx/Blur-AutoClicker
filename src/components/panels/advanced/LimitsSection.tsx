@@ -5,6 +5,7 @@ import {
   SETTINGS_LIMITS,
   TIME_LIMIT_UNIT_OPTIONS,
 } from "../../../settingsSchema";
+import { useTranslation } from "react-i18next";
 import { Disableable, NumInput, ToggleBtn, InfoIcon } from "./shared";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function LimitsSection({ settings, update, showInfo }: Props) {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<"clicks" | "time">("clicks");
   const effectiveMode: "clicks" | "time" =
     settings.timeLimitEnabled !== settings.clickLimitEnabled
@@ -43,8 +45,8 @@ export default function LimitsSection({ settings, update, showInfo }: Props) {
     ? settings.clickLimitEnabled
     : settings.timeLimitEnabled;
   const activeUnavailableReason = isClicksMode
-    ? "Enable Click Limit to stop automatically after a set number of clicks."
-    : "Enable Time Limit to stop automatically after a set amount of time.";
+    ? t("advanced:limits.clickDisabledReason")
+    : t("advanced:limits.timeDisabledReason");
 
   const handleModeChange = (nextMode: "clicks" | "time") => {
     const wasEnabled = activeEnabled;
@@ -90,12 +92,12 @@ export default function LimitsSection({ settings, update, showInfo }: Props) {
             <InfoIcon
               text={
                 isClicksMode
-                  ? "Stops automatically after the selected number of clicks."
-                  : "Stops automatically after the selected duration."
+                  ? t("advanced:limits.clickTooltip")
+                  : t("advanced:limits.timeTooltip")
               }
             />
           ) : null}
-          <span className="adv-card-title">Limits</span>
+          <span className="adv-card-title">{t("advanced:limits.heading")}</span>
         </div>
         <ToggleBtn value={activeEnabled} onChange={handleToggleChange} />
       </div>
@@ -121,7 +123,7 @@ export default function LimitsSection({ settings, update, showInfo }: Props) {
                   min={SETTINGS_LIMITS.clickLimit.min}
                   style={{ width: "89px", textAlign: "right" }}
                 />
-                <span className="adv-unit">clicks</span>
+                <span className="adv-unit">{t("common:unit.clicks")}</span>
               </div>
             ) : (
               <>
@@ -145,7 +147,7 @@ export default function LimitsSection({ settings, update, showInfo }: Props) {
                           })
                         }
                       >
-                        {timeLimitUnitOption}
+                        {t(`common:options.timeUnit.${timeLimitUnitOption}`)}
                       </button>
                     ),
                   )}
@@ -158,14 +160,14 @@ export default function LimitsSection({ settings, update, showInfo }: Props) {
                 className={`adv-seg-btn ${isClicksMode ? "active" : ""}`}
                 onClick={() => handleModeChange("clicks")}
               >
-                Click
+                {t("advanced:limits.clickMode")}
               </button>
               <button
                 type="button"
                 className={`adv-seg-btn ${!isClicksMode ? "active" : ""}`}
                 onClick={() => handleModeChange("time")}
               >
-                Time
+                {t("advanced:limits.timeMode")}
               </button>
             </div>
           </div>

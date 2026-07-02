@@ -1,6 +1,7 @@
 import type { Settings } from "../../../store";
 
 import { SETTINGS_LIMITS } from "../../../settingsSchema";
+import { useTranslation } from "react-i18next";
 import { Disableable, InfoIcon, NumInput, ToggleBtn } from "./shared";
 
 interface Props {
@@ -14,6 +15,7 @@ export default function SpeedVariationSection({
   update,
   showInfo,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="adv-sectioncontainer adv-basic-card">
       <div className="adv-card-header">
@@ -25,14 +27,16 @@ export default function SpeedVariationSection({
           }}
         >
           {showInfo ? (
-            <InfoIcon text="Randomizes click speed by given percentage." />
+            <InfoIcon text={t("advanced:speedVariation.tooltip")} />
           ) : null}
-          <span className="adv-card-title">Speed Variation</span>
+          <span className="adv-card-title">
+            {t("advanced:speedVariation.heading")}
+          </span>
         </div>
         <div className="adv-row" style={{ gap: 8 }}>
           <Disableable
             enabled={settings.speedVariationEnabled}
-            disabledReason="Enable Speed Variation to edit how much the app randomizes your click timing."
+            disabledReason={t("advanced:speedVariation.disabledReason")}
           >
             <div className="adv-numbox-sm">
               <NumInput
@@ -41,7 +45,7 @@ export default function SpeedVariationSection({
                 min={SETTINGS_LIMITS.speedVariation.min}
                 max={SETTINGS_LIMITS.speedVariation.max}
               />
-              <span className="adv-unit">%</span>
+              <span className="adv-unit">{t("common:unit.percent")}</span>
             </div>
           </Disableable>
           <ToggleBtn
