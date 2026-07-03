@@ -18,7 +18,7 @@ use windows_sys::Win32::UI::Input::KeyboardAndMouse::{GetAsyncKeyState, VK_MENU,
 use windows_sys::Win32::UI::Shell::ExtractIconExW;
 use windows_sys::Win32::UI::WindowsAndMessaging::{
     DestroyIcon, DrawIconEx, EnumWindows, GetClassNameW, GetForegroundWindow, GetIconInfo,
-    GetWindowTextW, GetWindowThreadProcessId, ICONINFO, WindowFromPoint,
+    GetWindowTextW, GetWindowThreadProcessId, WindowFromPoint, ICONINFO,
 };
 
 use image::ImageEncoder;

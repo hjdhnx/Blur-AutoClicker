@@ -9,12 +9,12 @@ use crate::engine::stats::{print_run_stats, record_run};
 use crate::error::poisoned_inner;
 use crate::error::AppError;
 use crate::error::AppResult;
+use crate::ClickLogPayload;
 use crate::ClickerSettings;
 use crate::ClickerState;
 use crate::ClickerStatusPayload;
-use crate::ClickLogPayload;
-use crate::STATUS_EVENT;
 use crate::CLICK_LOG_EVENT;
+use crate::STATUS_EVENT;
 use windows_sys::Win32::UI::Input::KeyboardAndMouse::GetDoubleClickTime;
 
 use super::cycle::ClickCyclePlan;
@@ -792,7 +792,9 @@ fn run_batch(
         .ui_log_enabled
         .load(Ordering::Relaxed)
     {
-        st.pending_log_clicks = st.pending_log_clicks.saturating_add(batch.physical_clicks as u32);
+        st.pending_log_clicks = st
+            .pending_log_clicks
+            .saturating_add(batch.physical_clicks as u32);
         if st.last_log_emit.elapsed() >= Duration::from_millis(100) {
             let info = process::window_info_at(st.target_x, st.target_y);
             let _ = control.app.emit(

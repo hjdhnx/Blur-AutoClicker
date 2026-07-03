@@ -15,9 +15,9 @@ mod ui_commands;
 mod updates;
 mod window_lifecycle;
 
+pub use crate::app_state::ClickLogPayload;
 pub use crate::app_state::ClickerState;
 pub use crate::app_state::ClickerStatusPayload;
-pub use crate::app_state::ClickLogPayload;
 use crate::engine::worker::emit_status;
 use crate::error::poisoned_inner;
 use crate::hotkeys::register_hotkey_inner;
