@@ -5,6 +5,7 @@ node_modules/
 dist/
 dist-ssr/
 src-tauri/target/
+diag-click/target/
 /gen/schemas
 profile.json.gz
 
