@@ -234,7 +234,9 @@ fn normalize_low_level_keyboard_vk(khs: &KBDLLHOOKSTRUCT) -> i32 {
 unsafe extern "system" fn mouse_ll_proc(n_code: i32, w_param: usize, l_param: isize) -> LRESULT {
     if n_code >= 0 {
         let mhs = &*(l_param as *const MSLLHOOKSTRUCT);
-        if (mhs.dwExtraInfo) != AUTOCLICKER_EXTRA_INFO {
+        if mhs.dwExtraInfo != AUTOCLICKER_EXTRA_INFO
+            && !crate::engine::INJECTING_NOW.load(Ordering::SeqCst)
+        {
             let (vk, down) = match w_param as u32 {
                 WM_LBUTTONDOWN => (VK_LBUTTON as i32, true),
                 WM_LBUTTONUP => (VK_LBUTTON as i32, false),
@@ -271,7 +273,9 @@ unsafe extern "system" fn mouse_ll_proc(n_code: i32, w_param: usize, l_param: is
 unsafe extern "system" fn keyboard_ll_proc(n_code: i32, w_param: usize, l_param: isize) -> LRESULT {
     if n_code >= 0 {
         let khs = &*(l_param as *const KBDLLHOOKSTRUCT);
-        if (khs.dwExtraInfo) != AUTOCLICKER_EXTRA_INFO {
+        if khs.dwExtraInfo != AUTOCLICKER_EXTRA_INFO
+            && !crate::engine::INJECTING_NOW.load(Ordering::SeqCst)
+        {
             let vk = normalize_low_level_keyboard_vk(khs);
             if (0..256).contains(&vk) {
                 let down = matches!(w_param as u32, WM_KEYDOWN | WM_SYSKEYDOWN);

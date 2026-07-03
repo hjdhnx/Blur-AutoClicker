@@ -23,6 +23,7 @@ pub struct ClickerState {
     pub paused: Arc<AtomicBool>,
     pub warning: Mutex<Option<String>>,
     pub language: Mutex<String>,
+    pub ui_log_enabled: AtomicBool,
 }
 
 #[derive(Clone, serde::Serialize)]
@@ -37,6 +38,19 @@ pub struct ClickerStatusPayload {
     pub warning: Option<String>,
     pub active_sequence_index: Option<usize>,
     pub active_sequence_tick: u64,
+}
+
+#[derive(Clone, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ClickLogPayload {
+    pub timestamp_ms: u64,
+    pub x: i32,
+    pub y: i32,
+    pub pid: Option<u32>,
+    pub exe_name: Option<String>,
+    pub class_name: Option<String>,
+    pub window_title: Option<String>,
+    pub clicks_in_batch: u32,
 }
 
 #[derive(Clone, serde::Serialize)]

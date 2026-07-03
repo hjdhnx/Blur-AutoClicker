@@ -17,6 +17,7 @@ mod window_lifecycle;
 
 pub use crate::app_state::ClickerState;
 pub use crate::app_state::ClickerStatusPayload;
+pub use crate::app_state::ClickLogPayload;
 use crate::engine::worker::emit_status;
 use crate::error::poisoned_inner;
 use crate::hotkeys::register_hotkey_inner;
@@ -28,6 +29,7 @@ use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent,
 use tauri::{AppHandle, Listener, Manager};
 
 const STATUS_EVENT: &str = "clicker-status";
+const CLICK_LOG_EVENT: &str = "clicker-log";
 
 fn is_rtss_running() -> bool {
     crate::engine::process::is_process_running("RTSS.exe")
@@ -245,6 +247,7 @@ fn create_clicker_state() -> ClickerState {
         paused: Arc::new(AtomicBool::new(false)),
         warning: Mutex::new(None),
         language: Mutex::new(String::from("en")),
+        ui_log_enabled: AtomicBool::new(true),
     }
 }
 
@@ -311,6 +314,8 @@ pub fn run() {
             overlay::hide_overlay,
             ui_commands::hide_main_window,
             ui_commands::quit_app,
+            ui_commands::restart_as_admin,
+            ui_commands::set_ui_log_enabled,
             ui_commands::get_autostart_enabled,
             ui_commands::set_autostart_enabled,
             ui_commands::list_processes,

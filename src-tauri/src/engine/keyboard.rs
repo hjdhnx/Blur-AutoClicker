@@ -6,7 +6,6 @@ use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
 };
 
 use super::worker::{sleep_interruptible, RunControl};
-use super::AUTOCLICKER_EXTRA_INFO;
 
 #[inline]
 fn vk_to_scan(vk: u16) -> (u16, bool) {
@@ -31,7 +30,7 @@ pub fn make_keyboard_input(vk: u16, flags: u32) -> INPUT {
                 wScan: scan,
                 dwFlags: flags | KEYEVENTF_SCANCODE | ext_flag,
                 time: 0,
-                dwExtraInfo: AUTOCLICKER_EXTRA_INFO,
+                dwExtraInfo: super::synthetic_marker_extra(),
             },
         },
     }
@@ -40,7 +39,9 @@ pub fn make_keyboard_input(vk: u16, flags: u32) -> INPUT {
 #[inline]
 pub fn send_key_event(vk: u16, flags: u32) {
     let input = make_keyboard_input(vk, flags);
+    super::injecting_begin();
     unsafe { SendInput(1, &input, std::mem::size_of::<INPUT>() as i32) };
+    super::injecting_end();
 }
 
 pub fn is_alphabetic_vk(vk: u16) -> bool {
@@ -89,6 +90,7 @@ pub fn send_key_batch(vk: u16, n: usize, uppercase: bool) {
     for _ in 0..n {
         push_key_press(&mut inputs, vk, use_shift);
     }
+    super::injecting_begin();
     unsafe {
         SendInput(
             inputs.len() as u32,
@@ -96,6 +98,7 @@ pub fn send_key_batch(vk: u16, n: usize, uppercase: bool) {
             std::mem::size_of::<INPUT>() as i32,
         )
     };
+    super::injecting_end();
 }
 
 pub fn send_key_presses(

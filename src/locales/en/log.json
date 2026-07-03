@@ -1,0 +1,12 @@
+{
+  "empty": "No clicks yet. Start the clicker to see the execution log.",
+  "clear": "Clear",
+  "colTime": "Time",
+  "colCoord": "Coord",
+  "colProcess": "Process",
+  "colTitle": "Title",
+  "colPid": "PID",
+  "colClass": "Class",
+  "colClicks": "Clicks",
+  "unknown": "unknown"
+}

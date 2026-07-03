@@ -245,6 +245,49 @@ pub fn quit_app(app: AppHandle) {
     app.exit(0);
 }
 
+/// 以管理员权限重启（ShellExecute runas）——突破 UIPI，点击 elevated 目标所必需。
+#[tauri::command]
+pub fn restart_as_admin(app: AppHandle) -> AppResult<()> {
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::ffi::OsStrExt;
+        use windows_sys::Win32::UI::Shell::ShellExecuteW;
+        use windows_sys::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
+
+        let exe = std::env::current_exe()?;
+        let mut exe_w: Vec<u16> = std::ffi::OsStr::new(&exe).encode_wide().collect();
+        exe_w.push(0);
+        let verb: Vec<u16> = "runas\0".encode_utf16().collect();
+
+        let hinst = unsafe {
+            ShellExecuteW(
+                std::ptr::null_mut(),
+                verb.as_ptr(),
+                exe_w.as_ptr(),
+                std::ptr::null(),
+                std::ptr::null(),
+                SW_SHOWNORMAL,
+            )
+        };
+        if (hinst as usize) <= 32 {
+            return Err(AppError::State(
+                "Failed to elevate — user may have declined UAC.".into(),
+            ));
+        }
+    }
+
+    crate::overlay::OVERLAY_THREAD_RUNNING.store(false, std::sync::atomic::Ordering::SeqCst);
+    app.exit(0);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_ui_log_enabled(app: AppHandle, enabled: bool) -> AppResult<()> {
+    let state = app.state::<ClickerState>();
+    state.ui_log_enabled.store(enabled, Ordering::SeqCst);
+    Ok(())
+}
+
 #[tauri::command]
 pub fn list_processes() -> AppResult<Vec<crate::engine::process::ProcessInfo>> {
     Ok(crate::engine::process::list_running_processes())

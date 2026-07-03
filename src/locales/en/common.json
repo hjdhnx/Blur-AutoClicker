@@ -1,6 +1,11 @@
 {
   "app": { "name": "BlurAutoClicker" },
-  "tab": { "simple": "Simple", "advanced": "Advanced", "zones": "Zones" },
+  "tab": {
+    "simple": "Simple",
+    "advanced": "Advanced",
+    "zones": "Zones",
+    "log": "Log"
+  },
   "window": {
     "settings": "Settings",
     "minimize": "Minimize",
@@ -14,7 +19,11 @@
     "pausedWithReason": "Paused: {{reason}}",
     "warningPrefix": "⚠ {{warning}}"
   },
-  "confirm": { "confirm": "Confirm", "cancel": "Cancel", "working": "Working..." },
+  "confirm": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "working": "Working..."
+  },
   "unit": {
     "percent": "%",
     "px": "px",

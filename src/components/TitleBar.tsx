@@ -127,6 +127,26 @@ const ZonesIcon = memo(function ZonesIcon({ active }: TabIconProps) {
   );
 });
 
+const LogIcon = memo(function LogIcon({ active }: TabIconProps) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={active ? "2.2" : "2"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 6h14" />
+      <path d="M5 12h14" />
+      <path d="M5 18h9" />
+    </svg>
+  );
+});
+
 const TAB_ITEMS: readonly TabItem[] = [
   {
     value: "simple",
@@ -148,6 +168,13 @@ const TAB_ITEMS: readonly TabItem[] = [
     activeBg: "hsla(208, 85%, 58%, 0.14)",
     activeFocusRing: "hsla(208, 85%, 58%, 0.35)",
     icon: ({ active }) => <ZonesIcon active={active} />,
+  },
+  {
+    value: "log",
+    color: "hsl(265 85% 65%)",
+    activeBg: "hsla(265, 85%, 65%, 0.14)",
+    activeFocusRing: "hsla(265, 85%, 65%, 0.35)",
+    icon: ({ active }) => <LogIcon active={active} />,
   },
 ] as const;
 

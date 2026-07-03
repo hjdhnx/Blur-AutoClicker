@@ -1,0 +1,90 @@
+.log-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  gap: 6px;
+  color: var(--text-primary);
+}
+
+.log-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.log-clear-btn {
+  padding: 4px 14px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.log-clear-btn:hover {
+  background: var(--bg-input);
+}
+
+.log-viewport {
+  flex: 1;
+  overflow: auto;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  padding: 4px 0;
+}
+
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.log-table th,
+.log-table td {
+  padding: 2px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.log-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-surface);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.log-table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.log-row-batched {
+  color: var(--accent-yellow);
+}
+
+.log-cell-time {
+  color: var(--text-dim);
+}
+
+.log-cell-class {
+  color: var(--text-muted);
+}
+
+.log-cell-title {
+  color: var(--text-primary);
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.log-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-dim);
+}

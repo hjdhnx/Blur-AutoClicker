@@ -3,14 +3,14 @@ use super::worker::{sleep_interruptible, RunControl};
 use std::time::Duration;
 use std::time::Instant;
 
-use super::AUTOCLICKER_EXTRA_INFO;
 use windows_sys::Win32::UI::Input::KeyboardAndMouse::{
     SendInput, INPUT, INPUT_MOUSE, MOUSEEVENTF_ABSOLUTE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP,
     MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_MOVE, MOUSEEVENTF_RIGHTDOWN,
     MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_VIRTUALDESK, MOUSEINPUT,
 };
 use windows_sys::Win32::UI::WindowsAndMessaging::{
-    GetSystemMetrics, SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN, SM_XVIRTUALSCREEN, SM_YVIRTUALSCREEN,
+    GetSystemMetrics, SetCursorPos, SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN, SM_XVIRTUALSCREEN,
+    SM_YVIRTUALSCREEN,
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -154,13 +154,23 @@ pub fn get_cursor_pos() -> (i32, i32) {
 
 #[inline]
 pub fn move_mouse(target_x: i32, target_y: i32) {
-    if let Some(screen_rect) = current_virtual_screen_rect() {
-        let end_x = screen_rect.normalize_x(target_x);
-        let end_y = screen_rect.normalize_y(target_y);
+    if super::synthetic_marker_enabled() {
+        // 普通模式：SendInput 合成的 ABSOLUTE MOVE。普通 GUI 接受良好。
+        if let Some(screen_rect) = current_virtual_screen_rect() {
+            let end_x = screen_rect.normalize_x(target_x);
+            let end_y = screen_rect.normalize_y(target_y);
 
-        let movement = make_movement(end_x, end_y);
-        unsafe { SendInput(1, &movement, std::mem::size_of::<INPUT>() as i32) };
-        log::debug!("moved cursor x:{end_x}, y:{end_y}")
+            let movement = make_movement(end_x, end_y);
+            unsafe { SendInput(1, &movement, std::mem::size_of::<INPUT>() as i32) };
+            log::debug!("moved cursor x:{end_x}, y:{end_y}");
+        }
+    } else {
+        // 游戏兼容模式：SetCursorPos 同步钉死真实光标位置。
+        // SendInput(MOVE) 是异步入队，紧随其后的 down/up 可能在游戏处理 MOVE
+        // 之前到达，导致点击落到旧坐标；某些游戏（SDL/TapTap 套壳）对此敏感。
+        // SetCursorPos 立即更新系统光标，down/up 到达时位置已确定。
+        unsafe { SetCursorPos(target_x, target_y) };
+        log::debug!("moved cursor (SetCursorPos) x:{target_x}, y:{target_y}");
     }
 }
 
@@ -192,7 +202,7 @@ pub fn make_input(flags: u32, time: u32) -> INPUT {
                 mouseData: 0,
                 dwFlags: flags,
                 time,
-                dwExtraInfo: AUTOCLICKER_EXTRA_INFO,
+                dwExtraInfo: super::synthetic_marker_extra(),
             },
         },
     }
@@ -201,7 +211,9 @@ pub fn make_input(flags: u32, time: u32) -> INPUT {
 #[inline]
 pub fn send_mouse_event(flags: u32) {
     let input = make_input(flags, 0);
+    super::injecting_begin();
     unsafe { SendInput(1, &input, std::mem::size_of::<INPUT>() as i32) };
+    super::injecting_end();
 }
 
 pub fn send_batch(down: u32, up: u32, n: usize) {
@@ -210,6 +222,7 @@ pub fn send_batch(down: u32, up: u32, n: usize) {
         inputs.push(make_input(down, 0));
         inputs.push(make_input(up, 0));
     }
+    super::injecting_begin();
     unsafe {
         SendInput(
             inputs.len() as u32,
@@ -217,6 +230,7 @@ pub fn send_batch(down: u32, up: u32, n: usize) {
             std::mem::size_of::<INPUT>() as i32,
         )
     };
+    super::injecting_end();
 }
 
 pub fn send_clicks(
@@ -398,4 +412,24 @@ pub fn smooth_move(
     rng: &mut crate::engine::rng::SmallRng,
 ) {
     smooth_move_inner(start_x, start_y, end_x, end_y, duration_ms, rng, true);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn marker_enabled_controls_extra_info() {
+        crate::engine::set_synthetic_marker_enabled(true);
+        let input = make_input(MOUSEEVENTF_LEFTDOWN, 0);
+        let extra = unsafe { input.Anonymous.mi.dwExtraInfo };
+        assert_eq!(extra, crate::engine::AUTOCLICKER_EXTRA_INFO);
+
+        crate::engine::set_synthetic_marker_enabled(false);
+        let input = make_input(MOUSEEVENTF_LEFTDOWN, 0);
+        let extra = unsafe { input.Anonymous.mi.dwExtraInfo };
+        assert_eq!(extra, 0);
+
+        crate::engine::set_synthetic_marker_enabled(true);
+    }
 }

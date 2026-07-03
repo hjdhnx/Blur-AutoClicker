@@ -103,6 +103,7 @@ pub struct ClickerSettings {
     pub show_stop_reason: bool,
     pub show_stop_overlay: bool,
     pub strict_hotkey_modifiers: bool,
+    pub game_compatible_mode: bool,
 }
 
 // Frontend-only settings intentionally omitted from Rust:
@@ -113,7 +114,7 @@ impl Default for ClickerSettings {
     fn default() -> Self {
         Self {
             // Meta
-            version: 10,
+            version: 11,
 
             // Preset snapshot fields
             click_speed: 25.0,
@@ -179,6 +180,7 @@ impl Default for ClickerSettings {
             show_stop_reason: true,
             show_stop_overlay: true,
             strict_hotkey_modifiers: false,
+            game_compatible_mode: false,
         }
     }
 }

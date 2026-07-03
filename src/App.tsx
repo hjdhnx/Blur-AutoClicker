@@ -43,10 +43,11 @@ const AdvancedPanel = lazy(
 );
 const ZonesPanel = lazy(() => import("./components/panels/zones/ZonesPanel"));
 const SettingsPanel = lazy(() => import("./components/panels/SettingsPanel"));
+const LogPanel = lazy(() => import("./components/panels/log/LogPanel"));
 const TitleBar = lazy(() => import("./components/TitleBar"));
-export type Tab = "simple" | "advanced" | "zones" | "settings";
+export type Tab = "simple" | "advanced" | "zones" | "log" | "settings";
 
-const BACKEND_SETTINGS_SCHEMA_VERSION = 10;
+const BACKEND_SETTINGS_SCHEMA_VERSION = 11;
 const MAX_DROPDOWN_OVERFLOW_BOTTOM = 220;
 const OPERATIONAL_SETTING_KEYS = new Set<string>(
   Object.keys(buildPresetSnapshot(DEFAULT_SETTINGS)),
@@ -68,6 +69,7 @@ function getPanelSize(
   }
   if (tab === "settings") return { width: 560, height: 720 + extra };
   if (tab === "zones") return { width: 750, height: 720 + extra };
+  if (tab === "log") return { width: 760, height: 600 + extra };
   if (advancedSequenceLayout === "tall") {
     return { width: 560, height: 720 + extra };
   }
@@ -999,7 +1001,7 @@ export default function App() {
   const handleTabChange = (nextTab: Tab) => {
     setTab(nextTab);
 
-    if (nextTab === "settings") return;
+    if (nextTab === "settings" || nextTab === "log") return;
     if (committedSettingsRef.current.lastPanel === nextTab) return;
 
     updateSettings({
@@ -1086,6 +1088,7 @@ export default function App() {
             showInfo={true}
           />
         )}
+        {tab === "log" && <LogPanel />}
         {tab === "settings" && (
           <SettingsPanel
             settings={settings}

@@ -142,6 +142,7 @@ mod tests {
             process_list_mode: crate::engine::ProcessListMode::Whitelist,
             process_list_entries: Vec::new(),
             task_switcher_stop_enabled: false,
+            game_compatible_mode: false,
         }
     }
 

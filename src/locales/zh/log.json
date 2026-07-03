@@ -1,0 +1,12 @@
+{
+  "empty": "暂无点击记录。启动点击器即可看到执行日志。",
+  "clear": "清空",
+  "colTime": "时间",
+  "colCoord": "坐标",
+  "colProcess": "进程",
+  "colTitle": "标题",
+  "colPid": "PID",
+  "colClass": "类名",
+  "colClicks": "点击数",
+  "unknown": "未知"
+}

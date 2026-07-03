@@ -28,6 +28,9 @@ async function bootstrap() {
   try {
     const settings = await loadSettings();
     language = resolveInitialLanguage(settings.language);
+    void invoke("set_ui_log_enabled", {
+      enabled: settings.enableExecutionLog,
+    }).catch(() => {});
   } catch (e) {
     error(
       `Failed to load settings for language detection: ${

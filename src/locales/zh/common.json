@@ -1,6 +1,11 @@
 {
   "app": { "name": "BlurAutoClicker" },
-  "tab": { "simple": "简单", "advanced": "高级", "zones": "区域" },
+  "tab": {
+    "simple": "简单",
+    "advanced": "高级",
+    "zones": "区域",
+    "log": "日志"
+  },
   "window": {
     "settings": "设置",
     "minimize": "最小化",

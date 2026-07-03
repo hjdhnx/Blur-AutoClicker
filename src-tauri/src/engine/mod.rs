@@ -7,9 +7,43 @@ pub mod rng;
 pub mod stats;
 pub mod stop_reason;
 pub mod worker;
-use std::sync::atomic::AtomicI64;
+use std::sync::atomic::{AtomicBool, AtomicI64};
 pub use worker::start_clicker;
 pub const AUTOCLICKER_EXTRA_INFO: usize = 0x800D_A5A5; //Just a random Identifier
+
+/// 注入期间为 true。兼容模式下低级钩子用它替代 dwExtraInfo 标记识别自身事件。
+pub static INJECTING_NOW: AtomicBool = AtomicBool::new(false);
+
+static MARKER_ENABLED: AtomicBool = AtomicBool::new(true);
+
+/// false（游戏兼容模式）→ 注入事件 dwExtraInfo=0，绕过会过滤已知 autoclicker 魔数的应用。
+pub fn set_synthetic_marker_enabled(on: bool) {
+    MARKER_ENABLED.store(on, std::sync::atomic::Ordering::SeqCst);
+}
+
+pub fn synthetic_marker_extra() -> usize {
+    if MARKER_ENABLED.load(std::sync::atomic::Ordering::SeqCst) {
+        AUTOCLICKER_EXTRA_INFO
+    } else {
+        0
+    }
+}
+
+/// 兼容模式（marker 关闭）下为 false。mouse.rs 据此把光标移动从异步的
+/// SendInput(MOVE) 切到同步的 SetCursorPos，避免 move/down 之间游戏内部
+/// 光标位置尚未更新导致点击落点错误。
+pub fn synthetic_marker_enabled() -> bool {
+    MARKER_ENABLED.load(std::sync::atomic::Ordering::SeqCst)
+}
+
+pub fn injecting_begin() {
+    INJECTING_NOW.store(true, std::sync::atomic::Ordering::SeqCst);
+}
+
+pub fn injecting_end() {
+    INJECTING_NOW.store(false, std::sync::atomic::Ordering::SeqCst);
+}
+
 use self::mouse::VirtualScreenRect;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
@@ -75,6 +109,7 @@ pub struct ClickerConfig {
     pub process_list_mode: ProcessListMode,
     pub process_list_entries: Vec<ProcessListEntry>,
     pub task_switcher_stop_enabled: bool,
+    pub game_compatible_mode: bool,
 }
 
 #[derive(Clone, Debug, serde::Serialize)]

@@ -940,6 +940,80 @@ export default function SettingsPanel({
           <div className="settings-row">
             <div className="settings-label-group">
               <span className="settings-label">
+                {t("settings:behavior.gameCompatibleMode")}
+              </span>
+              <span className="settings-sublabel">
+                {t("settings:behavior.gameCompatibleModeDesc")}
+              </span>
+            </div>
+            <div className="settings-seg-group">
+              {onOffOptions.map((option) => (
+                <button
+                  key={String(option.value)}
+                  className={`settings-seg-btn ${settings.gameCompatibleMode === option.value ? "active" : ""}`}
+                  onClick={() => update({ gameCompatibleMode: option.value })}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="settings-row">
+            <div className="settings-label-group">
+              <span className="settings-label">
+                {t("settings:behavior.enableExecutionLog")}
+              </span>
+              <span className="settings-sublabel">
+                {t("settings:behavior.enableExecutionLogDesc")}
+              </span>
+            </div>
+            <div className="settings-seg-group">
+              {onOffOptions.map((option) => (
+                <button
+                  key={String(option.value)}
+                  className={`settings-seg-btn ${settings.enableExecutionLog === option.value ? "active" : ""}`}
+                  onClick={() => {
+                    update({ enableExecutionLog: option.value });
+                    invoke("set_ui_log_enabled", {
+                      enabled: option.value,
+                    }).catch(() => {});
+                  }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {settings.gameCompatibleMode && (
+            <div className="settings-row">
+              <div className="settings-label-group">
+                <span className="settings-label">
+                  {t("settings:behavior.restartAsAdmin")}
+                </span>
+                <span className="settings-sublabel">
+                  {t("settings:behavior.restartAsAdminDesc")}
+                </span>
+              </div>
+              <div className="settings-seg-group">
+                <button
+                  className="settings-seg-btn"
+                  onClick={() => {
+                    invoke("restart_as_admin").catch((e) => {
+                      error(`Failed to restart as admin: ${e}`);
+                    });
+                  }}
+                >
+                  {t("settings:behavior.restartAsAdminButton")}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="settings-row">
+            <div className="settings-label-group">
+              <span className="settings-label">
                 {t("settings:behavior.stopOnAltTab")}
               </span>
               <span className="settings-sublabel">

@@ -5,7 +5,7 @@ use std::sync::Mutex;
 use std::sync::OnceLock;
 
 use crate::error::poisoned_inner;
-use windows_sys::Win32::Foundation::{CloseHandle, HWND, INVALID_HANDLE_VALUE, LPARAM};
+use windows_sys::Win32::Foundation::{CloseHandle, HWND, INVALID_HANDLE_VALUE, LPARAM, POINT};
 use windows_sys::Win32::Graphics::Gdi::{
     CreateCompatibleDC, CreateDIBSection, DeleteDC, DeleteObject, GetObjectW, SelectObject, BITMAP,
     BITMAPINFO, BITMAPINFOHEADER, DIB_RGB_COLORS,
@@ -18,7 +18,7 @@ use windows_sys::Win32::UI::Input::KeyboardAndMouse::{GetAsyncKeyState, VK_MENU,
 use windows_sys::Win32::UI::Shell::ExtractIconExW;
 use windows_sys::Win32::UI::WindowsAndMessaging::{
     DestroyIcon, DrawIconEx, EnumWindows, GetClassNameW, GetForegroundWindow, GetIconInfo,
-    GetWindowTextW, GetWindowThreadProcessId, ICONINFO,
+    GetWindowTextW, GetWindowThreadProcessId, ICONINFO, WindowFromPoint,
 };
 
 use image::ImageEncoder;
@@ -222,6 +222,46 @@ fn get_process_name_from_pid(target_pid: u32) -> Option<String> {
     }
     unsafe { CloseHandle(snapshot) };
     result
+}
+
+pub struct WindowInfo {
+    pub pid: u32,
+    pub exe_name: Option<String>,
+    pub class_name: Option<String>,
+    pub title: Option<String>,
+}
+
+pub fn window_info_at(x: i32, y: i32) -> Option<WindowInfo> {
+    let pt = POINT { x, y };
+    let hwnd = unsafe { WindowFromPoint(pt) };
+    if hwnd.is_null() {
+        return None;
+    }
+    let mut pid: u32 = 0;
+    unsafe { GetWindowThreadProcessId(hwnd, &mut pid) };
+    if pid == 0 {
+        return None;
+    }
+    let mut class_buf = [0u16; 128];
+    let class_len = unsafe { GetClassNameW(hwnd, class_buf.as_mut_ptr(), class_buf.len() as i32) };
+    let class_name = if class_len > 0 {
+        Some(String::from_utf16_lossy(&class_buf[..class_len as usize]))
+    } else {
+        None
+    };
+    let mut title_buf = [0u16; 512];
+    let title_len = unsafe { GetWindowTextW(hwnd, title_buf.as_mut_ptr(), title_buf.len() as i32) };
+    let title = if title_len > 0 {
+        Some(String::from_utf16_lossy(&title_buf[..title_len as usize]))
+    } else {
+        None
+    };
+    Some(WindowInfo {
+        pid,
+        exe_name: get_process_name_from_pid(pid),
+        class_name,
+        title,
+    })
 }
 
 struct BuildWindowMap {

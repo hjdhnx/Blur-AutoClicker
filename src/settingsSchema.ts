@@ -323,6 +323,14 @@ const SETTINGS_ONLY_FIELDS = {
     default: false,
     ui: { section: "behavior", control: "toggle" },
   },
+  gameCompatibleMode: {
+    default: false,
+    ui: { section: "behavior", control: "toggle" },
+  },
+  enableExecutionLog: {
+    default: true,
+    ui: { section: "behavior", control: "toggle" },
+  },
   taskSwitcherStopEnabled: {
     default: true,
     ui: { section: "behavior", control: "toggle" },
@@ -468,6 +476,8 @@ export const SETTINGS_UI_SCHEMA = [
       "showStopOverlay",
       "showStopReason",
       "strictHotkeyModifiers",
+      "gameCompatibleMode",
+      "enableExecutionLog",
       "taskSwitcherStopEnabled",
       "extendedClickSpeedLimit",
     ],

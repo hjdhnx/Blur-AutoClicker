@@ -12,7 +12,9 @@ use crate::error::AppResult;
 use crate::ClickerSettings;
 use crate::ClickerState;
 use crate::ClickerStatusPayload;
+use crate::ClickLogPayload;
 use crate::STATUS_EVENT;
+use crate::CLICK_LOG_EVENT;
 use windows_sys::Win32::UI::Input::KeyboardAndMouse::GetDoubleClickTime;
 
 use super::cycle::ClickCyclePlan;
@@ -401,6 +403,7 @@ pub fn build_config(settings: &ClickerSettings) -> AppResult<ClickerConfig> {
             })
             .collect(),
         task_switcher_stop_enabled: settings.task_switcher_stop_enabled,
+        game_compatible_mode: settings.game_compatible_mode,
     })
 }
 
@@ -568,6 +571,8 @@ struct LoopState {
     target_y: i32,
     next_batch_time: Instant,
     moved_sequence_index: Option<usize>,
+    last_log_emit: Instant,
+    pending_log_clicks: u32,
 }
 
 impl LoopState {
@@ -588,6 +593,8 @@ impl LoopState {
             target_y,
             next_batch_time: Instant::now(),
             moved_sequence_index: None,
+            last_log_emit: Instant::now(),
+            pending_log_clicks: 0,
         }
     }
 }
@@ -712,6 +719,14 @@ fn run_batch(
         return false;
     }
 
+    // 游戏兼容模式（鼠标）：down 之前留出窗口让目标处理 WM_MOUSEMOVE 更新内部光标位置。
+    // SetCursorPos 虽同步设置系统光标，但目标（SDL/TapTap 套壳）需从消息队列取出
+    // WM_MOUSEMOVE 后才更新它内部记录的鼠标坐标；down 紧随入队会落到旧坐标。
+    // diag-click 用 20ms 间隔即可命中。next_batch_time 补偿会扣回这段 sleep，CPS 不变。
+    if config.game_compatible_mode && !ctx.is_keyboard {
+        sleep_interruptible(Duration::from_millis(20), control);
+    }
+
     let base_dur = config.interval_secs * batch.cycles as f64;
     let batch_dur = if config.variation > 0.0 {
         rng.next_gaussian(base_dur, base_dur * config.variation / 100.0)
@@ -771,6 +786,33 @@ fn run_batch(
     st.click_count += batch.physical_clicks as i64;
     CLICK_COUNT.store(st.click_count, Ordering::Relaxed);
 
+    if control
+        .app
+        .state::<ClickerState>()
+        .ui_log_enabled
+        .load(Ordering::Relaxed)
+    {
+        st.pending_log_clicks = st.pending_log_clicks.saturating_add(batch.physical_clicks as u32);
+        if st.last_log_emit.elapsed() >= Duration::from_millis(100) {
+            let info = process::window_info_at(st.target_x, st.target_y);
+            let _ = control.app.emit(
+                CLICK_LOG_EVENT,
+                ClickLogPayload {
+                    timestamp_ms: now_epoch_ms(),
+                    x: st.target_x,
+                    y: st.target_y,
+                    pid: info.as_ref().map(|i| i.pid),
+                    exe_name: info.as_ref().and_then(|i| i.exe_name.clone()),
+                    class_name: info.as_ref().and_then(|i| i.class_name.clone()),
+                    window_title: info.as_ref().and_then(|i| i.title.clone()),
+                    clicks_in_batch: st.pending_log_clicks,
+                },
+            );
+            st.pending_log_clicks = 0;
+            st.last_log_emit = Instant::now();
+        }
+    }
+
     let sleep_dur = st.next_batch_time.saturating_duration_since(Instant::now());
     if sleep_dur > Duration::ZERO {
         sleep_interruptible(sleep_dur, control);
@@ -808,9 +850,26 @@ fn cpu_usage(start_cycles: u64, cycle_freq: f64, elapsed_secs: f64) -> f64 {
     }
 }
 
+/// RAII guard：进入 start_clicker 时按配置切换合成标记开关，退出（含提前 return / panic）时恢复默认 true。
+struct SyntheticMarkerGuard;
+
+impl SyntheticMarkerGuard {
+    fn new(marker_enabled: bool) -> Self {
+        crate::engine::set_synthetic_marker_enabled(marker_enabled);
+        Self
+    }
+}
+
+impl Drop for SyntheticMarkerGuard {
+    fn drop(&mut self) {
+        crate::engine::set_synthetic_marker_enabled(true);
+    }
+}
+
 pub fn start_clicker(config: ClickerConfig, control: RunControl) -> RunOutcome {
     CLICK_COUNT.store(0, Ordering::SeqCst);
     let _timer = TimerResolutionGuard::new();
+    let _marker_guard = SyntheticMarkerGuard::new(!config.game_compatible_mode);
 
     let cycle_freq = calibrate_cycle_freq();
     let cpu_start = thread_cycles();
@@ -928,6 +987,7 @@ mod tests {
 
             process_list_entries: Vec::new(),
             task_switcher_stop_enabled: false,
+            game_compatible_mode: false,
         }
     }
 

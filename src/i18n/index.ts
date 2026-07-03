@@ -15,6 +15,8 @@ import stopReasonEn from "../locales/en/stopReason.json";
 import stopReasonZh from "../locales/zh/stopReason.json";
 import overlayEn from "../locales/en/overlay.json";
 import overlayZh from "../locales/zh/overlay.json";
+import logEn from "../locales/en/log.json";
+import logZh from "../locales/zh/log.json";
 
 export type Language = "en" | "zh";
 
@@ -28,6 +30,7 @@ const NAMESPACES = [
   "hotkeys",
   "stopReason",
   "overlay",
+  "log",
 ] as const;
 
 const resources = {
@@ -39,6 +42,7 @@ const resources = {
     hotkeys: hotkeysEn,
     stopReason: stopReasonEn,
     overlay: overlayEn,
+    log: logEn,
   },
   zh: {
     common: commonZh,
@@ -48,6 +52,7 @@ const resources = {
     hotkeys: hotkeysZh,
     stopReason: stopReasonZh,
     overlay: overlayZh,
+    log: logZh,
   },
 };
 
